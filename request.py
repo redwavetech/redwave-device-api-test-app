@@ -48,7 +48,7 @@ def main():
     '''
 
     s = Serial(port_name, baudrate=115200)  
-    msg = contsruct_payload_from_json('{"command":"disconnect"}')
+    msg = contsruct_payload_from_json('{"command":"disconect"}')
     print(f'\nsending: {msg}')        
     s.write(msg)    
 
