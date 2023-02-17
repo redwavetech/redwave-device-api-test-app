@@ -8,7 +8,7 @@
 - Open two terminals
 - In terminal 1: run `python3 response.py`
 - In terminal 2, run `python3 request.py`
-- In `request.py`, change the command `{"command":"disconect"}` as desired; see documentation for a list of available commands
+- In `request.py`, change the command `{"command":"disconnect"}` as desired; see documentation for a list of available commands
 
 <br />
 
@@ -24,7 +24,7 @@ The following commands are available in a request/response fashion. Our Team Lea
 
 To disconnect the cleian
 
-`{"command":"disconect"}`
+`{"command":"disconnect"}`
 
 Disconnects client from host
 
