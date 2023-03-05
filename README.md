@@ -47,6 +47,7 @@ code {
     font-size: 12px;
 }
 </style>
+-->
 <table>
     <tr style="padding: 20px;">
         <th>Command</th>
@@ -89,7 +90,7 @@ code {
         <td>No</td>
     </tr>                           
 </table>
--->
+
 ## Command Details
 
 ### <span id="disconnect">disconnect</span>
