@@ -20,27 +20,140 @@ _NOTE 2: This API is not in a stable state and is subject to change._
 
 The following commands are available in a request/response fashion. Our Team Leader app or your own proprietary app will send a JSON command to Redwave's XplorIR device and the device's API return a JSON response. 
 
-## disconnect
+## List of Commands
 
-To disconnect the cleian
+<style>
+table {
+    width: 100%;
+    margin: 0 0 20px 0;
+}
+table tr {
+    border: 1px solid grey;    
+}
+table th:first-of-type, td:first-of-type {
+    width: 60%;
+    border: 1px solid grey;
+}
+table th:nth-of-type(2), td:nth-of-type(2) {
+    width: 40%;    
+    border: 1px solid grey;
+}
+span {
+    display: block;
+    margin: 0 0 15px 0;
+    font-style: italic;
+}
+code {
+    font-size: 12px;
+}
+</style>
+<table>
+    <tr style="padding: 20px;">
+        <th>Command</th>
+        <th>Availability</th>
+    </tr>
+    <tr>
+        <td><a href="#disconnect">disconnect</a></td>
+        <td>As a fixture only</td>
+    </tr>
+    <tr>
+        <td><a href="#get_commands">get_commands</a></td>
+        <td>As a fixture only</td>
+    </tr>
+    <tr>
+        <td><a href="#get_sample">get_sample</a></td>
+        <td>As a fixture only</td>
+    </tr>
+    <tr>
+        <td><a href="#get_sessions">get_sessions</a></td>
+        <td>As a fixture only</td>
+    </tr>
+    <tr>
+        <td><a href="#get_session">get_session</a></td>
+        <td>As a fixture only</td>
+    </tr>
+    <tr>
+        <td><a href="#get_wifi_info">get_wifi_info</a></td>
+        <td>As a fixture only</td>
+    </tr>      
+    <tr>
+        <td><a href="#set_wifi">set_wifi</a></td>
+        <td>As a fixture only</td>
+    </tr> 
+    <tr>
+        <td><a href="#start_single_point">start_single_point</a></td>
+        <td>No</td>
+    </tr> 
+    <tr>
+        <td><a href="#start_continuous">start_continuous</a></td>
+        <td>No</td>
+    </tr>                           
+</table>
 
-`{"command":"disconnect"}`
+## Command Details
 
-Disconnects client from host
+### <span id="disconnect">disconnect</span>
 
-## get_wifi_info
+Disconnects the client from the host.
 
-`{"command":"get_wifi_info"}`
+```
+{ 
+    "command": "disconnect" 
+}
+```
+
+The response from this command will be:
+
+```
+{
+    "message": "Connection successfully terminated.",
+    "command": "disconnect"
+    "succeeded": true,
+}
+```
+
+### <span id="get_wifi_info">_get_wifi_info_</span>
 
 Gets Wifi information including: a list of available networks, the network that the device is connected to, and whether the device has wifi enabled.
 
-## set_wifi
+```
+{
+    "command":"get_wifi_info"
+}
+```
+The response from this command will be:
+```json
+{
+		"command": "get_wifi_info",
+		"message": "Successfully obtained list of nearby networks",
+		"results":
+			{
+				"networks":[
+					{
+						"name": "Network A",
+						"signalStrength": 96,
+						"requiresPassword": true
+					},
+					{
+						"name": "Network B",
+						"signalStrength": 78,
+						"requiresPassword": false
+					}
+				],
+				"connectedTo": "Network A",
+				"isEnabled": false
+			},
+		"succeeded": true,
+	}
+```
+
+### <span id="set_wifi">_set_wifi_</span>
 
 Sets Wifi settings including whether Wifi is on/off and which network it should be connected to.
 
 `{"command":"set_wifi"}`
 
-## get_commands
+### <span id="get_commands">_get_commands_</span>
 
 This command will list the available commands on the device.  
 
@@ -70,7 +183,8 @@ The response for this command is as follows:
 }
 ```
 
-## get_sessions
+
+### <span id="get_sessions">_get_sessions_</span>
 
 Each time you run the device in single point mode or in continuous monitoring mode, we store the results as a session.  A single point session will have a single value while a continous monitoring session will have one or many values. To get a list of sessions from the device, send the following _get_sessions_ command:
 
@@ -99,11 +213,18 @@ The response from this command is as follows:
 }
 ```
 
-## get_session
+### <span id="get_session">_get_session_</span>
 
 This endpoint gets details of a current sessions
 
-`{"command":"get_session", "args": { "id": "7yty380e-54c6-4a2f-9d9f-cd86fbd05c96" }}`
+```
+{
+    "command":"get_session", 
+    "args": { 
+        "uuid": "7yty380e-54c6-4a2f-9d9f-cd86fbd05c96" 
+    }
+}
+```
 
 The response from this command is as follows:
 
@@ -113,7 +234,7 @@ The response from this command is as follows:
     "results": {
         "date": "2023-01-31T20:47:37.224256",
         "name": "2023-01-31/20-47-37",
-        "uuid": "3eca380e-54c6-4a2f-9d9f-cd86fbd05c96",						
+        "uuid": "7yty380e-54c6-4a2f-9d9f-cd86fbd05c96",						
         "data": [
             {            
                 "uuid": "3eca380e-54c6-4a2f-9d9f-cd86fbd05c96",
@@ -155,7 +276,7 @@ The response from this command is as follows:
 }
 ```
 
-## get_sample
+### <span id="get_sample">_get_sample_</span>
 
 The following endpoint will get detailed information on a specific sample.
 
