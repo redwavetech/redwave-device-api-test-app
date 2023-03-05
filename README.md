@@ -18,14 +18,19 @@ _NOTE: The API will be part of Redwave's XplorIR and ProtectIR devices. Addition
 
 _NOTE 2: This API is not in a stable state and is subject to change._
 
-The following commands are available in a request/response fashion. Our Team Leader app or your own proprietary app will send a JSON command to Redwave's XplorIR device and the device's API return a JSON response. 
+The following commands are available in a request/response fashion. Our Team Leader app or your own proprietary app will send a JSON command to Redwave's device and the device's API will return a JSON response. 
 
 ## List of Commands
-<!-- This is commented out.
+<!-- 
+    While it looks like this style block
+    is commented out, it is active. It is
+    commented out so that it doesn't show
+    up in the readme page in GitHub.
 <style>
-table {
+.markdown-body table {
     width: 100%;
     margin: 0 0 20px 0;
+    diplay: table;
 }
 table tr {
     border: 1px solid grey;    
