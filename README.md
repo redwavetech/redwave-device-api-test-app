@@ -22,8 +22,8 @@ The following commands are available in a request/response fashion. Our Team Lea
 
 ## List of Commands
 
-<table style="display: table; width: 100%;">
-    <tr style="padding: 20px;">
+<table>
+    <tr>
         <th>Command</th>
         <th>Availability</th>
     </tr>
@@ -62,7 +62,35 @@ The following commands are available in a request/response fashion. Our Team Lea
     <tr>
         <td><a href="#start_continuous">start_continuous</a></td>
         <td>No</td>
-    </tr>                           
+    </tr>    
+    <tr>
+        <td><a href="#stop_continuous">stop_continuous</a></td>
+        <td>No</td>
+    </tr>                     
+    <tr>
+        <td><a href="#get_device_info">get_device_info</a></td>
+        <td>No</td>
+    </tr>                     
+    <tr>
+        <td><a href="#get_configuration">get_configuration</a></td>
+        <td>No</td>
+    </tr>                     
+    <tr>
+        <td><a href="#set_configuration">set_configuration</a></td>
+        <td>No</td>
+    </tr>                     
+    <tr>
+        <td><a href="#start_diagnostics">start_diagnostics</a></td>
+        <td>No</td>
+    </tr>                              
+    <tr>
+        <td><a href="#get_diagnostics">get_diagnostics</a></td>
+        <td>No</td>
+    </tr> 
+    <tr>
+        <td><a href="#shutdown">shutdown</a></td>
+        <td>No</td>
+    </tr>                                                    
 </table>
 
 ## Command Details
@@ -301,3 +329,193 @@ The response from this command is as follows:
     "succeeded": true,
 }
 ```
+
+### <span id="stop_continuous">_stop_continuous_</span>
+
+The following endpoint will stop a continuous monitoring session.
+```json
+{
+    "command":"stop_continuous"
+}
+```
+The response from this command is as follows:
+
+```json
+{
+    "command": "stop_continuous",
+    "message": "Successfully stopped continuous monitoring session",
+    "succeeded": true,
+}
+```
+
+### <span id="get_device_info">_get_device_info_</span>
+
+The following endpoint will retrieve information about the device.
+```json
+{
+    "command":"get_device_info"
+}
+```
+The response from this command is as follows:
+
+```json
+{		
+    "command": "get_device_info",
+    "data": {
+        "serialNumber": "A1001024B",
+        "instrumentId": "123456789",
+        "softwareVersion": "0.41"
+    },
+    "message": "Successfully retrieved device info",
+    "succeeded": true,
+}
+```
+
+### <span id="start_continuous">_start_continuous_</span>
+
+The following endpoint will start a continuous monitoring session.
+```json
+{
+    "command":"start_continuous"
+}
+```
+The response from this command is as follows:
+
+```json
+{
+    "command": "start_continuous",
+    "message": "Successfully started continuous monitoring session",
+    "succeeded": true,
+}
+```
+
+### <span id="start_single_point">_start_single_point_</span>
+
+The following endpoint will start a single point detection.
+```json
+{
+    "command":"start_single_point"
+}
+```
+The response from this command is as follows:
+
+```json
+{
+    "command": "start_single_point",
+    "message": "Successfully started single point detection",
+    "succeeded": true,
+}
+```
+
+### <span id="get_configuration">_get_configuration_</span>
+
+The following endpoint will get the device's configuration.
+```json
+{
+    "command":"get_configuration"
+}
+```
+The response from this command is as follows:
+
+```json
+{
+    "command": "get_configuration",
+    "data": {
+        "ledAlarmsOn": false,
+        "audioAlarmsOn": false,
+        "bluetoothOn": false,
+        "wifiOn": false			
+    },
+    "message": "Successfully retrieved configuration",
+    "succeeded": true,
+}
+```
+
+### <span id="set_configuration">_set_configuration_</span>
+
+The following endpoint will set the device's configuration:
+```json
+{
+    "command": "set_configuration",
+    "args": {
+        "ledAlarmsOn": false,
+        "audioAlarmsOn": false,
+        "bluetoothOn": false,
+        "wifiOn": false			
+    }
+}
+
+```
+The response from this command is as follows:
+```json
+{
+    "command": "set_configuration",
+    "message": "Successfully set configuration",
+    "succeeded": true,
+}
+```
+
+### <span id="start_diagnostics">start_diagnostics</span>
+
+The following endpoint will start a diagnostic test:
+```json
+{
+    "command": "start_diagnostics",
+}
+
+```
+The response from this command is as follows:
+```json
+{
+    "command": "start_diagnostics",
+    "message": "Successfully started a diagnostic test",
+    "succeeded": true,
+}
+```
+
+### <span id="get_diagnostics">_get_diagnostics</span>
+
+The following endpoint will get a list of diagnostic tests:
+```json
+{
+    "command": "get_diagnostics",
+}
+
+```
+The response from this command is as follows:
+```json
+{
+    "command": "get_diagnostics",
+    "data": {
+        "diagnostics": [
+            {
+                "date": "2023-01-31T20:47:37.224256",
+                "results": "passed"
+            }
+        ]
+	},
+    "message": "Successfully retrieved diagnostic tests",
+    "succeeded": true,
+}
+```
+
+### <span id="shutdown">_shutdown_</span>
+
+The following endpoint will shutdown the device.
+```json
+{
+    "command":"shutdown"
+}
+```
+The response from this command is as follows:
+
+```json
+{
+    "command": "shutdown",
+    "message": "Device is shutting down",
+    "succeeded": true,
+}
+```
+
+
+
