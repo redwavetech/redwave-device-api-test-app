@@ -21,38 +21,7 @@ _NOTE 2: This API is not in a stable state and is subject to change._
 The following commands are available in a request/response fashion. Our Team Leader app or your own proprietary app will send a JSON command to Redwave's device and the device's API will return a JSON response. 
 
 ## List of Commands
-<!-- 
-    While it looks like this style block
-    is commented out, it is active. It is
-    commented out so that it doesn't show
-    up in the readme page in GitHub.
-<style>
-.markdown-body table {
-    width: 100%;
-    margin: 0 0 20px 0;
-    diplay: table;
-}
-table tr {
-    border: 1px solid grey;    
-}
-table th:first-of-type, td:first-of-type {
-    width: 60%;
-    border: 1px solid grey;
-}
-table th:nth-of-type(2), td:nth-of-type(2) {
-    width: 40%;    
-    border: 1px solid grey;
-}
-span {
-    display: block;
-    margin: 0 0 15px 0;
-    font-style: italic;
-}
-code {
-    font-size: 12px;
-}
-</style>
--->
+
 <table>
     <tr style="padding: 20px;">
         <th>Command</th>
