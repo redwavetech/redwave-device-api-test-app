@@ -22,7 +22,7 @@ The following commands are available in a request/response fashion. Our Team Lea
 
 ## List of Commands
 
-<table>
+<table style="display: table; width: 100%;">
     <tr style="padding: 20px;">
         <th>Command</th>
         <th>Availability</th>
