@@ -57,39 +57,39 @@ The following commands are available in a request/response fashion. Our Team Lea
     </tr> 
     <tr>
         <td><a href="#start_single_point">start_single_point</a></td>
-        <td>No</td>
+        <td>As a fixture only</td>
     </tr> 
     <tr>
         <td><a href="#start_continuous">start_continuous</a></td>
-        <td>No</td>
+        <td>As a fixture only</td>
     </tr>    
     <tr>
         <td><a href="#stop_continuous">stop_continuous</a></td>
-        <td>No</td>
+        <td>As a fixture only</td>
     </tr>                     
     <tr>
         <td><a href="#get_device_info">get_device_info</a></td>
-        <td>No</td>
+        <td>As a fixture only</td>
     </tr>                     
     <tr>
         <td><a href="#get_configuration">get_configuration</a></td>
-        <td>No</td>
+        <td>As a fixture only</td>
     </tr>                     
     <tr>
         <td><a href="#set_configuration">set_configuration</a></td>
-        <td>No</td>
+        <td>As a fixture only</td>
     </tr>                     
     <tr>
         <td><a href="#start_diagnostics">start_diagnostics</a></td>
-        <td>No</td>
+        <td>As a fixture only</td>
     </tr>                              
     <tr>
         <td><a href="#get_diagnostics">get_diagnostics</a></td>
-        <td>No</td>
+        <td>As a fixture only</td>
     </tr> 
     <tr>
         <td><a href="#shutdown">shutdown</a></td>
-        <td>No</td>
+        <td>As a fixture only</td>
     </tr>                                                    
 </table>
 
