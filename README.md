@@ -130,6 +130,14 @@ Sets Wifi settings including whether Wifi is on/off and which network it should 
     "command":"set_wifi"
 }
 ```
+Response from this command will be:
+```json
+{
+    "command":"set_wifi",
+    "message": "Successfully set wifi configuration",
+    "succeeded": true
+}
+```
 
 ### <span id="get_commands">_get_commands_</span>
 
@@ -161,7 +169,7 @@ The response for this command is as follows:
             "description": "Returns a list of available wifi networks, the currently connected network, and whether wifi is enabled."
         }
     ],
-    "status": "success",
+    "succeeded": true
 }
 ```
 
@@ -193,7 +201,8 @@ The response from this command is as follows:
             "type": "continousMonitoring",
             "uuid": "7yty380e-54c6-4a2f-9d9f-cd86fbd05c96",    							
         }
-    ]
+    ],
+    "succeeded": true,
 }
 ```
 
@@ -288,6 +297,7 @@ The response from this command is as follows:
             "score": 0.982,
             "is_top_hit": true
         }
-    ]
+    ],
+    "succeeded": true,
 }
 ```
