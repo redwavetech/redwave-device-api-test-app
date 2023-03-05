@@ -14,14 +14,14 @@
 
 # API Description
 
-_NOTE: The API will be available on Redwave's XplorIR devices starting with release v0.40. The first release of the API will only return fixed (not real) data.  Additional information on when the API will feature real data and more endpoints will be posted on this page._
+_NOTE: The API will be part of Redwave's XplorIR and ProtectIR devices. Additional information on when the API will feature real data and more endpoints will be posted on this page._
 
 _NOTE 2: This API is not in a stable state and is subject to change._
 
 The following commands are available in a request/response fashion. Our Team Leader app or your own proprietary app will send a JSON command to Redwave's XplorIR device and the device's API return a JSON response. 
 
 ## List of Commands
-
+<!-- This is commented out.
 <style>
 table {
     width: 100%;
@@ -89,14 +89,14 @@ code {
         <td>No</td>
     </tr>                           
 </table>
-
+-->
 ## Command Details
 
 ### <span id="disconnect">disconnect</span>
 
 Disconnects the client from the host.
 
-```
+```json
 { 
     "command": "disconnect" 
 }
@@ -104,7 +104,7 @@ Disconnects the client from the host.
 
 The response from this command will be:
 
-```
+```json
 {
     "message": "Connection successfully terminated.",
     "command": "disconnect"
@@ -116,7 +116,7 @@ The response from this command will be:
 
 Gets Wifi information including: a list of available networks, the network that the device is connected to, and whether the device has wifi enabled.
 
-```
+```json
 {
     "command":"get_wifi_info"
 }
@@ -124,44 +124,51 @@ Gets Wifi information including: a list of available networks, the network that 
 The response from this command will be:
 ```json
 {
-		"command": "get_wifi_info",
-		"message": "Successfully obtained list of nearby networks",
-		"results":
-			{
-				"networks":[
-					{
-						"name": "Network A",
-						"signalStrength": 96,
-						"requiresPassword": true
-					},
-					{
-						"name": "Network B",
-						"signalStrength": 78,
-						"requiresPassword": false
-					}
-				],
-				"connectedTo": "Network A",
-				"isEnabled": false
-			},
-		"succeeded": true,
-	}
+    "command": "get_wifi_info",
+    "message": "Successfully obtained list of nearby networks",
+    "results": {
+        "networks":[
+            {
+                "name": "Network A",
+                "signalStrength": 96,
+                "requiresPassword": true
+            },
+            {
+                "name": "Network B",
+                "signalStrength": 78,
+                "requiresPassword": false
+            }
+        ],
+        "connectedTo": "Network A",
+        "isEnabled": false
+    },
+    "succeeded": true,
+}
 ```
 
 ### <span id="set_wifi">_set_wifi_</span>
 
 Sets Wifi settings including whether Wifi is on/off and which network it should be connected to.
 
-`{"command":"set_wifi"}`
+```json
+{
+    "command":"set_wifi"
+}
+```
 
 ### <span id="get_commands">_get_commands_</span>
 
 This command will list the available commands on the device.  
 
-`{"command":"get_commands"}`
+```json
+{
+    "command":"get_commands"
+}
+```
 
 The response for this command is as follows:
 
-```
+```json
 {
     "description": "A list of commands",
     "message":"Successfully retrieved a list of commands",				
@@ -183,23 +190,25 @@ The response for this command is as follows:
 }
 ```
 
-
 ### <span id="get_sessions">_get_sessions_</span>
 
 Each time you run the device in single point mode or in continuous monitoring mode, we store the results as a session.  A single point session will have a single value while a continous monitoring session will have one or many values. To get a list of sessions from the device, send the following _get_sessions_ command:
 
-`{"command":"get_sessions"}`
+```json
+{
+    "command":"get_sessions"
+}
+```
 
 The response from this command is as follows:
 
-```
+```json
 {
-    "errors": null,
-    "description": "A list of sessions",
+    "message": "Successfully retrieved a list of sessions",    
     "results": [
         {				
             "date": "2023-01-31T20:47:37.224256",                
-            "name": "2023-01-31/20-47-37"
+            "name": "2023-01-31/20-47-37",
             "type": "singlePoint",
             "uuid": "3eca380e-54c6-4a2f-9d9f-cd86fbd05c96",
         },
@@ -217,7 +226,7 @@ The response from this command is as follows:
 
 This endpoint gets details of a current sessions
 
-```
+```json
 {
     "command":"get_session", 
     "args": { 
@@ -228,7 +237,7 @@ This endpoint gets details of a current sessions
 
 The response from this command is as follows:
 
-```
+```json
 {
     "message": "Successfully retrieved session data",
     "results": {
@@ -272,7 +281,7 @@ The response from this command is as follows:
             }
         ]
     },
-    "status": "success"
+    "succeeded": true
 }
 ```
 
@@ -280,11 +289,15 @@ The response from this command is as follows:
 
 The following endpoint will get detailed information on a specific sample.
 
-`{"command":"get_sample"}`
+```json
+{
+    "command":"get_sample"
+}
+```
 
 The response from this command is as follows:
 
-```
+```json
 {         
     "uuid": "eb8f268e-8007-45e9-9438-aadec17ac09f",  
     "name": "2023-01-31/20-47-37",          
