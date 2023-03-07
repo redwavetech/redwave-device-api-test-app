@@ -1,14 +1,29 @@
 # Setup Steps
 
-- Turn on your Redwave FTIR device
+If you're downloading the project for the first time...
+
+On Windows using Powershell (PS>):
+
+PS> git clone https://github.com/pieterbergmans/redwave-library-algorithm.git
+PS> cd into/your/project/folder
+If you've already cloned the project...
+
+PS> cd into/your/project/folder
+PS> git pull origin master
+Now create your virtual environment with...
+
+PS> python -m venv venv
+PS> venv\Scripts\activate
+PS> python -m pip install -r requirements.txt
+
+At this point, the python app is ready to run.  Before you make a request from the python app to the device, please follow these steps:
+
+- Turn on your Redwave device
 - Connect your device to your PC via USB
-- Query your PC for the port that the device is connected to 
-- In `response.py`, change the port value
-- In `request.py`, change the port value below to for a list of available commands.
-- Open two terminals
-- In terminal 1: run `python3 response.py`
-- In terminal 2, run `python3 request.py`
-- In `request.py`, change the command `{"command":"disconnect"}` as desired; see documentation for a list of available commands
+- run `python ports.py` at your command prompt to determine which port your device is connected to
+- run `python request-response.py` 
+
+`request-response.py` is initially setup to send the `get_commands` command. To test other endpoints/commands, replace the command in this line, `msg = contsruct_payload_from_json('{"command":"get_commands"}')` in the `request-response.py` with your desired command.
 
 <br />
 
