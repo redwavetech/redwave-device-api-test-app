@@ -4,7 +4,7 @@ If you're downloading the project for the first time...
 
 On Windows using Powershell (PS>):
 ```
-PS> git clone https://github.com/pieterbergmans/redwave-library-algorithm.git
+PS> git clone https://github.com/redwavetech/redwave-device-api-test-app.git
 PS> cd into/your/project/folder
 ```
 If you've already cloned the project...
