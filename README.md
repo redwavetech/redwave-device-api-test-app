@@ -32,6 +32,11 @@ At this point, the python app is ready to run.  Before you make a request from t
 
 `request-response.py` is initially setup to send the `get_commands` command. To test other endpoints/commands, replace the command in this line, `msg = contsruct_payload_from_json('{"command":"get_commands"}')` in the `request-response.py` with your desired command. All the available commands are listed below.
 
+When you're done, you can exit from your virtual environment with the following command:
+```
+deactivate
+```
+
 <br />
 
 # API Description
