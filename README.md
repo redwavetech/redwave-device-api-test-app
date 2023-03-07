@@ -3,19 +3,21 @@
 If you're downloading the project for the first time...
 
 On Windows using Powershell (PS>):
-
+```
 PS> git clone https://github.com/pieterbergmans/redwave-library-algorithm.git
 PS> cd into/your/project/folder
+```
 If you've already cloned the project...
-
+```
 PS> cd into/your/project/folder
 PS> git pull origin master
+```
 Now create your virtual environment with...
-
+```
 PS> python -m venv venv
 PS> venv\Scripts\activate
 PS> python -m pip install -r requirements.txt
-
+```
 At this point, the python app is ready to run.  Before you make a request from the python app to the device, please follow these steps:
 
 - Turn on your Redwave device
