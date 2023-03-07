@@ -34,7 +34,7 @@ At this point, the python app is ready to run.  Before you make a request from t
 
 When you're done, you can exit from your virtual environment with the following command:
 ```
-deactivate
+PS> deactivate
 ```
 
 <br />
