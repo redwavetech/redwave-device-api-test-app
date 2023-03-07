@@ -5,27 +5,32 @@ If you're downloading the project for the first time...
 On Windows using Powershell (PS>):
 ```
 PS> git clone https://github.com/redwavetech/redwave-device-api-test-app.git
-PS> cd into/your/project/folder
+PS> cd redwave-device-api-test-app
 ```
 If you've already cloned the project...
 ```
-PS> cd into/your/project/folder
+PS> cd redwave-device-api-test-app
 PS> git pull origin master
 ```
 Now create your virtual environment with...
 ```
 PS> python -m venv venv
-PS> venv\Scripts\activate
+PS> .\venv\Scripts\activate
 PS> python -m pip install -r requirements.txt
 ```
+> If you run into an error like `Active.psql cannot be loaded because running scripts is disabled on this system` when trying to load your venv, you can try running your PowerShell as administrator and then run `Set-ExecutionPolicy AllSigned`.
+
+<br />
+
 At this point, the python app is ready to run.  Before you make a request from the python app to the device, please follow these steps:
 
 - Turn on your Redwave device
 - Connect your device to your PC via USB
 - run `python ports.py` at your command prompt to determine which port your device is connected to
+- change the port_name variable in this line `port_name = '/dev/ttys016'` in the request-response.py script
 - run `python request-response.py` 
 
-`request-response.py` is initially setup to send the `get_commands` command. To test other endpoints/commands, replace the command in this line, `msg = contsruct_payload_from_json('{"command":"get_commands"}')` in the `request-response.py` with your desired command.
+`request-response.py` is initially setup to send the `get_commands` command. To test other endpoints/commands, replace the command in this line, `msg = contsruct_payload_from_json('{"command":"get_commands"}')` in the `request-response.py` with your desired command. All the available commands are listed below.
 
 <br />
 
