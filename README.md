@@ -39,6 +39,60 @@ PS> deactivate
 
 <br />
 
+# Message Format
+
+The format of the message following the following format: 
+
+```
+  * In-Memory View
+  * +-----+-----+----------+-----------------------+-----+-----+-----+
+  * | SOH | STX |   pLen   |        Payload        | CRC | ETX | EOT |
+  * +-----+-----+----------+-----------------------+-----+-----+-----+
+  * 0     1     2          6                      N-3   N-2   N-1    N	(Bytes)
+```
+
+Here is detailed information on each packet:
+
+```
+ *    ___________________________________________________________
+ *    - SOH                                                      \
+ *        Start of Heading ASCII control character 0x01.          \
+ *                                                                 \____ Header
+ *    - STX                                                        /     2 Bytes
+ *        Start of Text ASCII control character 0x02.             /
+ *    ___________________________________________________________/
+ *    - pLen                                                     \
+ *        Unsigned integer (little endian) representing the       \
+ *        length of Payload. This should always end up being       \____ Payload length
+ *        n-9 bytes with respect to this structure. Doubles        /     4 Bytes
+ *        as an additional packet validity check.                 /
+ *    ___________________________________________________________/
+ *    - Payload                                                  \
+ *        Serialized JSON data. This is the user data to be       \
+ *        extracted if and only if:                                \
+ *            1. Header exists at the beginning of the packet       \___ Payload (user data)
+ *            2. pLen matches the length of the payload             /    N-9 Bytes
+ *            3. CRC matches the receiving ends crc calculation    /
+ *            4. Footer exists at the end of the packet           /
+ *    ___________________________________________________________/
+ *    - CRC                                                      \
+ *        8-bit cyclic redundancy check on Payload. This greatly  \_____ Cyclic Redundancy Check
+ *        mitigates the chances of processing invalid user data   /      1 Bytes
+ *    ___________________________________________________________/
+ *    - ETX                                                      \
+ *        End of Text ASCII control character 0x03.               \
+ *                                                                 \____ Footer
+ *    - EOT                                                        /     2 Bytes
+ *        End of Transmission ASCII control character 0x04.       /
+ *    ___________________________________________________________/
+```
+
+Failure to correctly format your message in the above format will results in an `Invalid packet format` error being returned.  Here is a visual representation of the message format:
+
+![message format](message-format.png "Message Format")
+
+<br />
+
 # API Description
 
 _NOTE: The API will be part of Redwave's XplorIR and ProtectIR devices. Additional information on when the API will feature real data and more endpoints will be posted on this page._
