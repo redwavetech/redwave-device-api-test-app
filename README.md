@@ -141,6 +141,14 @@ The following commands are available in a request/response fashion. Our Team Lea
         <td>As a fixture only</td>
     </tr> 
     <tr>
+        <td><a href="#start_background_collection">start_background_collection</a></td>
+        <td>As a fixture only</td>
+    </tr>  
+    <tr>
+        <td><a href="#start_background_collection">start_sample_collection</a></td>
+        <td>As a fixture only</td>
+    </tr>         
+    <tr>
         <td><a href="#start_continuous">start_continuous</a></td>
         <td>As a fixture only</td>
     </tr>    

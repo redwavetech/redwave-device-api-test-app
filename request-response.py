@@ -24,13 +24,14 @@ def main():
 
     serial_port = Serial(port_name, baudrate=115200, timeout=0.2)
     msg = contsruct_payload_from_json('{"command":"get_commands"}')
-    serial_port.write(msg)
+    serial_port.write(msg)  
 
-    resp_packet = None
-    while not resp_packet:
-        resp_packet = serial_port.read_until(PACKET_FOOTER)
-    resp_json = get_json_from_packet(resp_packet)
-    print("Received:", resp_json)    
+    while True:        
+        resp_packet = None
+        while not resp_packet:
+            resp_packet = serial_port.read_until(PACKET_FOOTER)
+        resp_json = get_json_from_packet(resp_packet)
+        print("Received:", resp_json)      
 
 if __name__ == '__main__':
     main()
