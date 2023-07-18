@@ -15,23 +15,27 @@ def crc8(payload:bytes):
             inbyte >>= 1    
     return crc
 
-def get_json_from_packet(packet:bytes):
-    
+def get_json_from_packet(packet:bytes):    
+
     # Check packet header
     if packet[:2] != PACKET_HEADER:                     
         raise Warning("INVALID PACKET HEADER")
     # print(f'packet header: {packet[:2]}')        
 
     json_supposed_len, = unpack('<I', packet[2:6]) 
-    # print(f'packet length: {packet[2:6]}')
+    # print(f'packet length raw: {packet[2:6]}')
+    print(f'packet length: {packet[2:6]}')
+    print(f'json_supposed_len: {json_supposed_len}')
         
     # Extract JSON message
     json_bytes = packet[6:-3]
+    # print(f'json_bytes: {json_bytes}')
     json_str = json_bytes.decode()                           
     # print(f'packet json: {json_str}')
     
     # Extract alleged length of JSON message 
     # (interpret bytes as an unsigned integer)
+    print(f'json_actual_len: {len(json_bytes)}')
     if (json_supposed_len != len(json_bytes)):
         raise Warning("MESSAGE LENGTH MISMATCH")
     
