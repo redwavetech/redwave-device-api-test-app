@@ -23,8 +23,7 @@ def main():
     # port_name = '/dev/ttys016'
 
     serial_port = Serial(port_name, baudrate=115200, timeout=0.2)
-    msg = contsruct_payload_from_json('{"command":"get_device_info"}')
-    # msg = contsruct_payload_from_json('{"command":"get_sessions", "args": {"limit": 10}}')
+    msg = contsruct_payload_from_json('{"command":"get_device_info"}')    
     serial_port.write(msg)  
 
     while True:  
