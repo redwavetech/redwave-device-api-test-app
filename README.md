@@ -95,9 +95,7 @@ Failure to correctly format your message in the above format will results in an 
 
 # API Description
 
-_NOTE: The API will be part of Redwave's XplorIR and ProtectIR devices. Additional information on when the API will feature real data and more endpoints will be posted on this page._
-
-_NOTE 2: This API is not in a stable state and is subject to change._
+_NOTE: The API will be part of Redwave's XplorIR and InterceptIR devices._
 
 The following commands are available in a request/response fashion. Our Team Leader app or your own proprietary app will send a JSON command to Redwave's device and the device's API will return a JSON response. 
 
@@ -109,502 +107,402 @@ The following commands are available in a request/response fashion. Our Team Lea
         <th>Availability</th>
     </tr>
     <tr>
-        <td><a href="#disconnect">disconnect</a></td>
-        <td>As a fixture only</td>
+        <td><a href="#get_device_info">get_device_info</a></td>
+        <td>Currently available</td>
     </tr>
     <tr>
-        <td><a href="#get_commands">get_commands</a></td>
-        <td>As a fixture only</td>
-    </tr>
+        <td><a href="#start_cm">start_cm</a></td>
+        <td>Currently available</td>
+    </tr>    
     <tr>
-        <td><a href="#get_sample">get_sample</a></td>
-        <td>As a fixture only</td>
-    </tr>
-    <tr>
-        <td><a href="#get_sessions">get_sessions</a></td>
-        <td>As a fixture only</td>
-    </tr>
-    <tr>
-        <td><a href="#get_session">get_session</a></td>
-        <td>As a fixture only</td>
-    </tr>
-    <tr>
-        <td><a href="#get_wifi_info">get_wifi_info</a></td>
-        <td>As a fixture only</td>
-    </tr>      
-    <tr>
-        <td><a href="#set_wifi">set_wifi</a></td>
-        <td>As a fixture only</td>
-    </tr> 
-    <tr>
-        <td><a href="#start_single_point">start_single_point</a></td>
-        <td>As a fixture only</td>
+        <td><a href="#cancel_cm">cancel_cm</a></td>
+        <td>Currently available</td>
+    </tr>                     
     </tr> 
     <tr>
         <td><a href="#start_background_collection">start_background_collection</a></td>
-        <td>As a fixture only</td>
-    </tr>  
-    <tr>
-        <td><a href="#start_background_collection">start_sample_collection</a></td>
-        <td>As a fixture only</td>
-    </tr>         
-    <tr>
-        <td><a href="#start_continuous">start_continuous</a></td>
-        <td>As a fixture only</td>
-    </tr>    
-    <tr>
-        <td><a href="#stop_continuous">stop_continuous</a></td>
-        <td>As a fixture only</td>
-    </tr>                     
-    <tr>
-        <td><a href="#get_device_info">get_device_info</a></td>
-        <td>As a fixture only</td>
-    </tr>                     
-    <tr>
-        <td><a href="#get_configuration">get_configuration</a></td>
-        <td>As a fixture only</td>
-    </tr>                     
-    <tr>
-        <td><a href="#set_configuration">set_configuration</a></td>
-        <td>As a fixture only</td>
-    </tr>                     
-    <tr>
-        <td><a href="#start_diagnostics">start_diagnostics</a></td>
-        <td>As a fixture only</td>
-    </tr>                              
-    <tr>
-        <td><a href="#get_diagnostics">get_diagnostics</a></td>
-        <td>As a fixture only</td>
+        <td>Currently available</td>
     </tr> 
     <tr>
-        <td><a href="#shutdown">shutdown</a></td>
-        <td>As a fixture only</td>
+        <td><a href="#start_sample_collection">start_sample_collection</a></td>
+        <td>Currently available</td>
+    </tr>  
+    <tr>
+        <td><a href="#cancel_spd">cancel_spd</a></td>
+        <td>Currently available</td>
+    </tr>
+    <tr>
+        <td><a href="#get_sessions">get_sessions</a></td>
+        <td>Next release</td>
+    </tr>
+    <tr>
+        <td><a href="#get_session">get_session</a></td>
+        <td>Next release</td>
+    </tr>  
+    <tr>
+        <td><a href="#get_sample">get_sample</a></td>
+        <td>Next release</td>    
+    </tr>       
+    <tr>
+        <td><a href="#run_validation_background">run_validation_background</a></td>
+        <td>Next release</td>
+    </tr>                              
+    <tr>
+        <td><a href="#run_validation_sample">run_validation_sample</a></td>
+        <td>Next release</td>
+    </tr> 
+    <tr>
+        <td><a href="#run_advanced_validation">run_advanced_validation</a></td>
+        <td>Next release</td>
+    </tr>                                      
+    <tr>
+        <td><a href="#get_diagnostics">get_diagnostics</a></td>
+        <td>Next release</td>
+    </tr>                              
+    <tr>
+        <td><a href="#get_validations">get_validations</a></td>
+        <td>Next release</td>
+    </tr> 
+    <tr>
+        <td><a href="#get_validation">get_validation</a></td>
+        <td>Next release</td>
     </tr>                                                    
 </table>
 
 ## Command Details
 
-### <span id="disconnect">disconnect</span>
-
-Disconnects the client from the host.
-
-```json
-{ 
-    "command": "disconnect" 
-}
-```
-
-The response from this command will be:
-
-```json
-{
-    "message": "Connection successfully terminated.",
-    "command": "disconnect"
-    "succeeded": true,
-}
-```
-
-### <span id="get_wifi_info">_get_wifi_info_</span>
-
-Gets Wifi information including: a list of available networks, the network that the device is connected to, and whether the device has wifi enabled.
-
-```json
-{
-    "command":"get_wifi_info"
-}
-```
-The response from this command will be:
-```json
-{
-    "command": "get_wifi_info",
-    "message": "Successfully obtained list of nearby networks",
-    "results": {
-        "networks":[
-            {
-                "name": "Network A",
-                "signalStrength": 96,
-                "requiresPassword": true
-            },
-            {
-                "name": "Network B",
-                "signalStrength": 78,
-                "requiresPassword": false
-            }
-        ],
-        "connectedTo": "Network A",
-        "isEnabled": false
-    },
-    "succeeded": true,
-}
-```
-
-### <span id="set_wifi">_set_wifi_</span>
-
-Sets Wifi settings including whether Wifi is on/off and which network it should be connected to.
-
-```json
-{
-    "command":"set_wifi"
-}
-```
-Response from this command will be:
-```json
-{
-    "command":"set_wifi",
-    "message": "Successfully set wifi configuration",
-    "succeeded": true
-}
-```
-
-### <span id="get_commands">_get_commands_</span>
-
-This command will list the available commands on the device.  
-
-```json
-{
-    "command":"get_commands"
-}
-```
-
-The response for this command is as follows:
-
-```json
-{
-    "description": "A list of commands",
-    "message":"Successfully retrieved a list of commands",				
-    "results": [
-        {
-            "command": "disconnect",
-            "description": "Diconnects client from the host."
-        },
-        {
-            "command": "get_sessions",
-            "description": "Returns a list of sessions."
-        },
-        {
-            "command": "get_wifi_info",
-            "description": "Returns a list of available wifi networks, the currently connected network, and whether wifi is enabled."
-        }
-    ],
-    "succeeded": true
-}
-```
-
-### <span id="get_sessions">_get_sessions_</span>
-
-Each time you run the device in single point mode or in continuous monitoring mode, we store the results as a session.  A single point session will have a single value while a continous monitoring session will have one or many values. To get a list of sessions from the device, send the following _get_sessions_ command:
-
-```json
-{
-    "command":"get_sessions"
-}
-```
-
-The response from this command is as follows:
-
-```json
-{
-    "message": "Successfully retrieved a list of sessions",    
-    "results": [
-        {				
-            "date": "2023-01-31T20:47:37.224256",                
-            "name": "2023-01-31/20-47-37",
-            "type": "singlePoint",
-            "uuid": "3eca380e-54c6-4a2f-9d9f-cd86fbd05c96",
-        },
-        {
-            "date": "2023-02-02T10:37:17.114257",
-            "name": "2023-02-02/10-37-17",
-            "type": "continousMonitoring",
-            "uuid": "7yty380e-54c6-4a2f-9d9f-cd86fbd05c96",    							
-        }
-    ],
-    "succeeded": true,
-}
-```
-
-### <span id="get_session">_get_session_</span>
-
-This endpoint gets details of a current sessions
-
-```json
-{
-    "command":"get_session", 
-    "args": { 
-        "uuid": "7yty380e-54c6-4a2f-9d9f-cd86fbd05c96" 
-    }
-}
-```
-
-The response from this command is as follows:
-
-```json
-{
-    "message": "Successfully retrieved session data",
-    "results": {
-        "date": "2023-01-31T20:47:37.224256",
-        "name": "2023-01-31/20-47-37",
-        "uuid": "7yty380e-54c6-4a2f-9d9f-cd86fbd05c96",						
-        "data": [
-            {            
-                "uuid": "3eca380e-54c6-4a2f-9d9f-cd86fbd05c96",
-                "name": "2023-01-31/20-45-37",   
-                "date": "2023-01-31T20:45:37.224256",
-                "coords": {
-                    "lat": 12345,
-                    "lon": 12321
-                },            
-                "compounds": []
-            }, 
-            {      
-                "uuid": "3eca380e-54c6-4a2f-9d9f-cd86fbd05c96",
-                "name": "2023-01-31/20-46-37",
-                "date": "2023-01-31T20:46:37.224256",
-                "coords": null,            
-                "compounds": []
-            },         
-            {         
-                "uuid": "eb8f268e-8007-45e9-9438-aadec17ac09f",
-                "name": "2023-01-31/20-47-37",            
-                "date": "2023-01-31T20:47:37.224256",
-                "coords": {
-                    "lat": 12345,
-                    "lon": 12321
-                },            					
-                "compounds": [
-                    {
-                        "cas_number": "67-63-0",
-                        "name": "2-Propanol",
-                        "score": 0.982,
-                        "is_top_hit": true
-                    }
-                ]
-            }
-        ]
-    },
-    "succeeded": true
-}
-```
-
-### <span id="get_sample">_get_sample_</span>
-
-The following endpoint will get detailed information on a specific sample.
-
-```json
-{
-    "command":"get_sample"
-}
-```
-
-The response from this command is as follows:
-
-```json
-{         
-    "uuid": "eb8f268e-8007-45e9-9438-aadec17ac09f",  
-    "name": "2023-01-31/20-47-37",          
-    "date": "2023-01-31T20:47:37.224256",
-    "coords": {
-        "lat": 12345,
-        "lon": 12321
-    },            					
-    "compounds": [
-        {
-            "cas_number": "67-63-0",
-            "name": "2-Propanol",
-            "score": 0.982,
-            "is_top_hit": true
-        }
-    ],
-    "succeeded": true,
-}
-```
-
-### <span id="stop_continuous">_stop_continuous_</span>
-
-The following endpoint will stop a continuous monitoring session.
-```json
-{
-    "command":"stop_continuous"
-}
-```
-The response from this command is as follows:
-
-```json
-{
-    "command": "stop_continuous",
-    "message": "Successfully stopped continuous monitoring session",
-    "succeeded": true,
-}
-```
-
 ### <span id="get_device_info">_get_device_info_</span>
 
 The following endpoint will retrieve information about the device.
+
 ```json
 {
     "command":"get_device_info"
 }
 ```
-The response from this command is as follows:
 
-```json
-{		
-    "command": "get_device_info",
-    "data": {
-        "serialNumber": "A1001024B",
-        "instrumentId": "123456789",
-        "softwareVersion": "0.41"
-    },
-    "message": "Successfully retrieved device info",
-    "succeeded": true,
-}
-```
-
-### <span id="start_continuous">_start_continuous_</span>
-
-The following endpoint will start a continuous monitoring session.
-```json
-{
-    "command":"start_continuous"
-}
-```
 The response from this command is as follows:
 
 ```json
 {
-    "command": "start_continuous",
-    "message": "Successfully started continuous monitoring session",
-    "succeeded": true,
+  "responseTo": "get_device_info",
+  "data": {
+    "serialNumber": "X0101234A",
+    "instrumentId": "123456789",
+    "softwareVersion": "r1.00"
+  },
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "Successfully retrieved device info",
+  "status": "done"
 }
 ```
 
-### <span id="start_single_point">_start_single_point_</span>
+### <span id="start_cm">_start_cm_</span>
 
-The following endpoint will start a single point detection.
+This command will start a continuous monitoring session. Once a continuous monitoring session has been started, the device will send messages approximately every 5 seconds.  The type of response depends on the state the device is in. Here is the request command:
+
+Request:
+
 ```json
 {
-    "command":"start_single_point"
+    "command":"start_cm"
 }
 ```
+
+Response:
+
+After sending the initial request, the device will be busy for up to 10 minutes while it builds it's models. During this time, the device will send the following response every 4 seconds:
+
+```json
+{  
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "The device is busy",
+  "responseTo": "start_cm",
+  "status": "busy"
+}
+```
+
+Once the device is done building it's models, it will go into a monitoring state. It will stay in this state until it detects a gas. The response from the device during this state will be:
+
+```json
+{  
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "The device is monitoring. ",
+  "responseTo": "start_cm",
+  "status": "monitoring"
+}
+```
+
+When the device detects a gas, it will be in the detection state while it runs our algorithms to find a match. During this state the device will respond with the following:
+
+```json
+{  
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "A detection event occurred.",
+  "responseTo": "start_cm",
+  "status": "detection"
+}
+```
+
+Shortly after that and if the detection state is able to identify a chemical, it goes into an identification state. During this state, the device will send seven messages while it runs it's algorithm to improve it's results. If you plan on storing results in your application, this would be the time to do so. The last "identification" message is the one you want to store. The response during this state is as follows:
+
+```json
+{
+  "data": {
+    "compounds": [
+      {
+        "casNumber": "67-64-1",
+        "confidence": 3,
+        "ghs": [],
+        "idlh": "2",
+        "ipcf": "",
+        "isTopHit": true,
+        "lel": "4",
+        "name": "Isopropyl Alchohol",
+        "score": 0.987
+      }
+    ],
+    "date": "",
+    "instrumentId": "016ebaee1d000019",
+    "locationLat": null,
+    "locationLon": null,
+    "mixtureAnalysis": [],
+    "name": "",
+    "serialNumber": "X00030423A",
+    "type": "gas"
+  },
+  "responseTo": "start_cm",
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "A chemical has been identified",
+  "status": "identification"
+}
+```
+
+If the detection state is unable to identify a chemical, it goes into a nonIdentification state. The response from this state is as follows:
+
+```json
+{
+"date": "2023-03-28T19:38:25.00000Z",
+"message": "We could not identify the chemical",
+"responseTo": "start_cm",
+"status": "nonIdentification"
+}
+```
+
+After the device has identified a chemical and the device is still in the gas plume, it goes back into the monitoring state but will continue to include the "data" node in the payload. Once the device exits the plume, it will go back to a monitoring state with no "data" node.  These responses will be as follows:
+
+While still in the plume....
+
+```json
+{
+  "data": {
+    "compounds": [
+      {
+        "casNumber": "67-64-1",
+        "confidence": 3,
+        "ghs": [],
+        "idlh": "2",
+        "ipcf": "",
+        "isTopHit": true,
+        "lel": "4",
+        "name": "Isopropyl Alchohol",
+        "score": 0.987
+      }
+    ],
+    "date": "",
+    "instrumentId": "016ebaee1d000019",
+    "locationLat": null,
+    "locationLon": null,
+    "mixtureAnalysis": [],
+    "name": "",
+    "serialNumber": "X00030423A",
+    "type": "gas"
+  },
+  "responseTo": "start_cm",
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "A chemical has been identified",
+  "status": "monitoring"
+}
+```
+
+After exiting the plume...
+
+```json
+{  
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "The device is monitoring. ",
+  "responseTo": "start_cm",
+  "status": "monitoring"
+}
+```
+
+Lastly, if the device pumps in too much gas it could go into a saturation state. This state can happen directly after the ready or detection states. The response for this state is as follows:
+
+```json
+{  
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "The device is monitoring. ",
+  "responseTo": "start_cm",
+  "status": "saturation"
+}
+```
+
+
+### <span id="cancel_cm">_cancel_cm_</span>
+
+This command will stop (cancel) a continuous monitoring session.
+
+Request:
+
+```json
+{
+    "command":"cancel_cm"
+}
+```
+
+Response:
+
+```json
+{
+  "responseTo": "cancel_cm",
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "Cancelled continuous monitoring.",
+  "status": "done"
+}
+```
+
+### <span id="start_background_collection">_start_background_collection_</span>
+
+A single point detection session is a two step process. The `start_background_collection` command is the first command you need to run and will take several minutes to complete. 
+
+```json
+{
+    "command":"start_background_collection"
+}
+```
+
+The initial response from this command is as follows:
+
+```json
+{
+  "responseTo": "start_background_collection",
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "Successfully started background collection",
+  "status": "busy"
+}
+```
+
+As the background collection continues, the device will continue to send updates such as the following:
+
+```json
+{
+  "responseTo": "start_background_collection",
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "Background collection is 35% complete",
+  "status": "busy"
+}
+```
+
+At the end of this step, the device will respond with the following:
+
+```json
+{
+  "responseTo": "start_background_collection",
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "Successfully completed background collection",
+  "status": "done"
+}
+```
+
+Once you receive this response, you can send the `start_sample_collection` command.
+
+### <span id="start_sample_collection">_start_sample_collection_</span>
+
+The following command will start a single point sample collection. This command can only be called after the `start_background_collection` command has been run in its entirety.
+
+```json
+{
+    "command":"start_sample_collection"
+}
+```
+
+As the sample collection continues, the device will continually to send messages like the following:
+
+```json
+{
+  "responseTo": "start_sample_collection",
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "Sample collection is 20% complete",
+  "status": "busy"
+}
+```
+
+Once complete, you'll receive the following response:
+
+```json
+{
+  "responseTo": "start_sample_collection",
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "Successfully completed sample collection",
+  "status": "done"
+}
+```
+
+### <span id="cancel_spd">_cancel_spd_</span>
+
+The following endpoint will cancel a single point detection session.
+
+```json
+{
+    "command":"cancel_spd"
+}
+```
+
 The response from this command is as follows:
 
 ```json
 {
-    "command": "start_single_point",
-    "message": "Successfully started single point detection",
-    "succeeded": true,
+  "responseTo": "cancel_spd",
+  "date": "2023-01-31T20:47:43.224256",
+  "message": "Cancelled background collection",
+  "status": "done"
 }
 ```
 
-### <span id="get_configuration">_get_configuration_</span>
+### <span id="get_sessions">_get_sessions_</span>
 
-The following endpoint will get the device's configuration.
-```json
-{
-    "command":"get_configuration"
-}
-```
-The response from this command is as follows:
+Information coming soon.
 
-```json
-{
-    "command": "get_configuration",
-    "data": {
-        "ledAlarmsOn": false,
-        "audioAlarmsOn": false,
-        "bluetoothOn": false,
-        "wifiOn": false			
-    },
-    "message": "Successfully retrieved configuration",
-    "succeeded": true,
-}
-```
+### <span id="get_session">_get_session_</span>
 
-### <span id="set_configuration">_set_configuration_</span>
+Information coming soon.
 
-The following endpoint will set the device's configuration:
-```json
-{
-    "command": "set_configuration",
-    "args": {
-        "ledAlarmsOn": false,
-        "audioAlarmsOn": false,
-        "bluetoothOn": false,
-        "wifiOn": false			
-    }
-}
+### <span id="get_sample">_get_sample_</span>
 
-```
-The response from this command is as follows:
-```json
-{
-    "command": "set_configuration",
-    "message": "Successfully set configuration",
-    "succeeded": true,
-}
-```
+Information coming soon.
 
-### <span id="start_diagnostics">start_diagnostics</span>
+### <span id="run_validation_background">run_validation_background</span>
 
-The following endpoint will start a diagnostic test:
-```json
-{
-    "command": "start_diagnostics",
-}
+Information coming soon.
 
-```
-The response from this command is as follows:
-```json
-{
-    "command": "start_diagnostics",
-    "message": "Successfully started a diagnostic test",
-    "succeeded": true,
-}
-```
+### <span id="run_validation_sample">_run_validation_sample</span>
 
-### <span id="get_diagnostics">_get_diagnostics</span>
+Information coming soon.
 
-The following endpoint will get a list of diagnostic tests:
-```json
-{
-    "command": "get_diagnostics",
-}
+### <span id="run_advanced_validation">_run_advanced_validation_</span>
 
-```
-The response from this command is as follows:
-```json
-{
-    "command": "get_diagnostics",
-    "data": {
-        "diagnostics": [
-            {
-                "date": "2023-01-31T20:47:37.224256",
-                "results": "passed"
-            }
-        ]
-	},
-    "message": "Successfully retrieved diagnostic tests",
-    "succeeded": true,
-}
-```
+Information coming soon.
 
-### <span id="shutdown">_shutdown_</span>
+### <span id="get_diagnostics">get_diagnostics</span>
 
-The following endpoint will shutdown the device.
-```json
-{
-    "command":"shutdown"
-}
-```
-The response from this command is as follows:
+Information coming soon.
 
-```json
-{
-    "command": "shutdown",
-    "message": "Device is shutting down",
-    "succeeded": true,
-}
-```
+### <span id="get_validations">_get_validations</span>
 
+Information coming soon.
+
+### <span id="get_validation">_get_validation_</span>
+
+Information coming soon.
 
 
