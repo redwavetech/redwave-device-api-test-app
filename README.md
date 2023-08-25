@@ -198,8 +198,24 @@ The response from this command is as follows:
 ```
 
 ### <span id="start_cm">_start_cm_</span>
+<br />
 
-This command will start a continuous monitoring session. Once a continuous monitoring session has been started, the device will send messages approximately every 5 seconds.  The type of response depends on the state the device is in. Here is the request command:
+> ### About Continuous Monitoring states
+>
+> When the device is in continuous monitoring mode, the device can be in any of the following states:
+>
+> - busy
+> - monitoring
+> - detection
+> - identification
+> - nonIdentification
+> - saturation
+>
+> Each state is explained more below. 
+
+<br />
+
+The following command will start a continuous monitoring session. Once a continuous monitoring session has been started, the device will send messages approximately every 5 seconds.  The type of response depends on the state the device is in. Here is the request command:
 
 Request:
 
