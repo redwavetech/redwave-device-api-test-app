@@ -208,7 +208,6 @@ The response from this command is as follows:
 > - monitoring
 > - detection
 > - identification
-> - nonIdentification
 > - saturation
 >
 > Each state is explained more below. 
@@ -291,17 +290,6 @@ Shortly after that and if the detection state is able to identify a chemical, it
   "date": "2023-01-31T20:47:43.224256",
   "message": "A chemical has been identified",
   "status": "identification"
-}
-```
-
-If the detection state is unable to identify a chemical, it goes into a nonIdentification state. The response from this state is as follows:
-
-```json
-{
-"date": "2023-03-28T19:38:25.00000Z",
-"message": "We could not identify the chemical",
-"responseTo": "start_cm",
-"status": "nonIdentification"
 }
 ```
 
