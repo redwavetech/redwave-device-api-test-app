@@ -25,14 +25,25 @@ PS> python -m pip install -r requirements.txt
 At this point, the python app is ready to run.  Before you make a request from the python app to the device, please follow these steps:
 
 - Turn on your Redwave device
-- Connect your device to your PC via USB
+- Connect your device to your PC or Mac via USB
 - run `python ports.py` at your command prompt to determine which port your device is connected to
-- change the port_name variable in this line `port_name = '/dev/ttys016'` in the request-response.py script
-- run `python request-response.py` 
 
-`request-response.py` is initially setup to send the `get_commands` command. To test other endpoints/commands, replace the command in this line, `msg = contsruct_payload_from_json('{"command":"get_commands"}')` in the `request-response.py` with your desired command. All the available commands are listed below.
+If you're on a PC... 
+
+- open `request-response.py`, find this line `port_name = 'COM11'`, and change the port_name value to the port your device is connected to
+- run `python request-response.py --command=get_device_info` 
+
+If you're on a Mac, you have the ability to send command requests in one terminal while listening to responses in the other. To do this...
+
+- open `response.py`, find this line `port_name = '/dev/ttys016'`, and change the port_name value to the port your device is connected to
+- open a terminal window and run `python3 response.py`
+- open `request.py`, find this line `port_name = '/dev/ttys016'`, and change the port_name value to the port your device is connected to
+- open another terminal window and run `python3 request.py --command=get_device_info`
+
+To test other commands, replace the `--command=` argument with your desired command. All the available commands are listed below.
 
 When you're done, you can exit from your virtual environment with the following command:
+
 ```
 PS> deactivate
 ```

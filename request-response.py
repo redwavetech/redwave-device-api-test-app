@@ -1,6 +1,8 @@
-import signal
+import argparse
 from serial import Serial
-from utils import contsruct_payload_from_json, get_json_from_packet, PACKET_FOOTER                    
+import signal
+from utils import contsruct_payload_from_json, get_json_from_packet, PACKET_FOOTER 
+                   
 
 serial_port:Serial = None
 
@@ -18,9 +20,15 @@ def main():
     signal.signal(signal.SIGINT, exit_handler)
     signal.signal(signal.SIGTERM, exit_handler)
 
-    # port_name = '/dev/cu.usbmodem101'
-    port_name = 'COM11'
+    port_name = '/dev/cu.usbmodem2101'
+    # port_name = 'COM11'
     # port_name = '/dev/ttys016'
+
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--command", help="Must be a valid command, like: get_device_info, start_cm, cancel_cm, etc.")  
+    args=parser.parse_args()
+    cmd = '{"command": "' + args.command + '"}'
+    print(f'Sending command: {cmd}')
 
     serial_port = Serial(port_name, baudrate=115200, timeout=0.2)
 
@@ -32,7 +40,7 @@ def main():
     # commands that can be used with this script. 
     #################
     
-    msg = contsruct_payload_from_json('{"command":"get_device_info"}')    
+    msg = contsruct_payload_from_json(cmd)    
     serial_port.write(msg)  
 
     while True:  

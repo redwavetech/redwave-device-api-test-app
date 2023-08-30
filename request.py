@@ -1,6 +1,7 @@
 from serial.tools.list_ports import comports
 from serial import Serial
 from struct import pack, unpack
+import argparse
 from utils import crc8, PACKET_HEADER, PACKET_FOOTER
                         
 def contsruct_payload_from_json(json_str:str):
@@ -25,11 +26,17 @@ def contsruct_payload_from_json(json_str:str):
     ])
 
 def main():
-    port_name = '/dev/ttys016'
-    # port_name = '/dev/tty.usbserial-54790373251'
+    port_name = '/dev/cu.usbmodem2101'
+    # port_name = 'COM11'  
+     
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--command", help="Must be a valid command, like: get_device_info, start_cm, cancel_cm, etc.")  
+    args=parser.parse_args()
+    cmd = '{"command": "' + args.command + '"}'
+    print(f'Sending command: {cmd}')
 
-    s = Serial(port_name, baudrate=115200)  
-    msg = contsruct_payload_from_json('{"command":"disconect"}')
+    s = Serial(port_name, baudrate=115200)    
+    msg = contsruct_payload_from_json(cmd)
     print(f'\nsending: {msg}')        
     s.write(msg)    
 
