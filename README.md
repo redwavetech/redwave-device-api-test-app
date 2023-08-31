@@ -26,19 +26,20 @@ At this point, the python app is ready to run.  Before you make a request from t
 
 - Turn on your Redwave device
 - Connect your device to your PC or Mac via USB
+- Put your device into **API** mode
 - run `python ports.py` at your command prompt to determine which port your device is connected to
 
 If you're on a PC... 
 
 - open `request-response.py`, find this line `port_name = 'COM11'`, and change the port_name value to the port your device is connected to
-- run `python request-response.py --command=get_device_info` 
+- run `python3 request-response.py --command='{\"command\": \"get_device_info\"}'` 
 
 If you're on a Mac, you have the ability to send command requests in one terminal while listening to responses in the other. To do this...
 
 - open `response.py`, find this line `port_name = '/dev/ttys016'`, and change the port_name value to the port your device is connected to
 - open a terminal window and run `python3 response.py`
 - open `request.py`, find this line `port_name = '/dev/ttys016'`, and change the port_name value to the port your device is connected to
-- open another terminal window and run `python3 request.py --command=get_device_info`
+- open another terminal window and run `python3 request.py --command='{"command": "get_device_info"}'`
 
 To test other commands, replace the `--command=` argument with your desired command. All the available commands are listed below.
 
@@ -132,11 +133,11 @@ The following commands are available in a request/response fashion. Our Team Lea
     </tr> 
     <tr>
         <td><a href="#start_background_collection">start_background_collection</a></td>
-        <td>Currently available</td>
+        <td>Next release</td>
     </tr> 
     <tr>
         <td><a href="#start_sample_collection">start_sample_collection</a></td>
-        <td>Currently available</td>
+        <td>Next release</td>
     </tr>  
     <tr>
         <td><a href="#cancel_spd">cancel_spd</a></td>
@@ -500,7 +501,7 @@ Information coming soon.
 
 Information coming soon.
 
-### <span id="run_validation_sample">_run_validation_sample</span>
+### <span id="run_validation_sample">run_validation_sample</span>
 
 Information coming soon.
 
@@ -512,7 +513,7 @@ Information coming soon.
 
 Information coming soon.
 
-### <span id="get_validations">_get_validations</span>
+### <span id="get_validations">get_validations</span>
 
 Information coming soon.
 

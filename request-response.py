@@ -27,7 +27,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--command", help="Must be a valid command, like: get_device_info, start_cm, cancel_cm, etc.")  
     args=parser.parse_args()
-    cmd = '{"command": "' + args.command + '"}'
+    cmd = args.command    
     print(f'Sending command: {cmd}')
 
     serial_port = Serial(port_name, baudrate=115200, timeout=0.2)

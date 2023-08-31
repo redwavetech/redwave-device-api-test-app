@@ -26,13 +26,13 @@ def contsruct_payload_from_json(json_str:str):
     ])
 
 def main():
-    port_name = '/dev/cu.usbmodem2101'
+    port_name = '/dev/cu.usbmodem1101'
     # port_name = 'COM11'  
      
     parser=argparse.ArgumentParser()
     parser.add_argument("--command", help="Must be a valid command, like: get_device_info, start_cm, cancel_cm, etc.")  
-    args=parser.parse_args()
-    cmd = '{"command": "' + args.command + '"}'
+    args=parser.parse_args()    
+    cmd = args.command
     print(f'Sending command: {cmd}')
 
     s = Serial(port_name, baudrate=115200)    
