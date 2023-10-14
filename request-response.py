@@ -24,11 +24,11 @@ def main():
     # port_name = 'COM11'
     # port_name = '/dev/ttys016'
 
-    parser=argparse.ArgumentParser()
-    parser.add_argument("--command", help="Must be a valid command, like: get_device_info, start_cm, cancel_cm, etc.")  
-    args=parser.parse_args()
-    cmd = args.command    
-    print(f'Sending command: {cmd}')
+    # parser=argparse.ArgumentParser()
+    # parser.add_argument("--command", help="Must be a valid command, like: get_device_info, start_cm, cancel_cm, etc.")  
+    # args=parser.parse_args()
+    # cmd = args.command    
+    # print(f'Sending command: {cmd}')
 
     serial_port = Serial(port_name, baudrate=115200, timeout=0.2)
 
@@ -40,7 +40,8 @@ def main():
     # commands that can be used with this script. 
     #################
     
-    msg = contsruct_payload_from_json(cmd)    
+    # msg = contsruct_payload_from_json(cmd)    
+    msg = contsruct_payload_from_json('{"command":"get_commands"}')
     serial_port.write(msg)  
 
     while True:  
@@ -51,6 +52,8 @@ def main():
             # print(f"resp_packet: {resp_packet}")          
         resp_json = get_json_from_packet(resp_packet)
         print("Received:", resp_json)      
+    
+    # serial_port.close()
 
 if __name__ == '__main__':
     main()

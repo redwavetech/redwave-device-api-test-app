@@ -17,17 +17,13 @@ def crc8(payload:bytes):
 
 def get_json_from_packet(packet:bytes):   
 
-    invalid_packet_header = False
-    invalid_packet_footer = False 
-    message_length_mismatch = False
-    crc_mismatch = False
-
     # Check packet header
     if packet[:2] != PACKET_HEADER:                     
         # raise Warning("INVALID PACKET HEADER")
         print('ERROR: INVALID PACKET HEADER')
-        invalid_packet_header = True
+        return None
     # print(f'packet header: {packet[:2]}')        
+    
 
     json_supposed_len, = unpack('<I', packet[2:6]) 
     # print(f'packet length raw: {packet[2:6]}')
@@ -46,7 +42,7 @@ def get_json_from_packet(packet:bytes):
     if (json_supposed_len != len(json_bytes)):
         # raise Warning("MESSAGE LENGTH MISMATCH")
         print('ERROR: MESSAGE LENGTH MISMATCH')
-        message_length_mismatch = True
+        return None
     
     # Extract CRC
     crc = packet[-3] 
@@ -55,21 +51,15 @@ def get_json_from_packet(packet:bytes):
     if (crc != crc8(json_bytes)):
         # raise Warning("CRC MISMATCH")
         print('ERROR: CRC MISMATCH')
-        crc_mismatch = True
+        return None
     
     # Check packet footer
     packet_footer = packet[-2:]
     if packet_footer != PACKET_FOOTER:                    
         # raise Warning("INVALID PACKET FOOTER")
         print('ERROR: INVALID PACKET FOOTER')    
-        invalid_packet_footer = True
-    
+        return None
     # print(f'packet footer: {packet_footer}')
-    
-    if invalid_packet_header == True or invalid_packet_footer == True or message_length_mismatch == True or crc_mismatch == True:
-        # json_bytes = packet
-        # json_str = json_bytes.decode()  
-        return None 
     
     return json_str
 
