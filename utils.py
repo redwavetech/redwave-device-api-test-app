@@ -15,11 +15,18 @@ def crc8(payload:bytes):
             inbyte >>= 1    
     return crc
 
-def get_json_from_packet(packet:bytes):    
+def get_json_from_packet(packet:bytes):   
+
+    invalid_packet_header = False
+    invalid_packet_footer = False 
+    message_length_mismatch = False
+    crc_mismatch = False
 
     # Check packet header
     if packet[:2] != PACKET_HEADER:                     
-        raise Warning("INVALID PACKET HEADER")
+        # raise Warning("INVALID PACKET HEADER")
+        print('ERROR: INVALID PACKET HEADER')
+        invalid_packet_header = True
     # print(f'packet header: {packet[:2]}')        
 
     json_supposed_len, = unpack('<I', packet[2:6]) 
@@ -37,21 +44,33 @@ def get_json_from_packet(packet:bytes):
     # (interpret bytes as an unsigned integer)
     print(f'json_actual_len: {len(json_bytes)}')
     if (json_supposed_len != len(json_bytes)):
-        raise Warning("MESSAGE LENGTH MISMATCH")
+        # raise Warning("MESSAGE LENGTH MISMATCH")
+        print('ERROR: MESSAGE LENGTH MISMATCH')
+        message_length_mismatch = True
     
     # Extract CRC
     crc = packet[-3] 
     crc_packet = packet[-3:-2]                                  
     # print(f'packet crc: {crc_packet}')
     if (crc != crc8(json_bytes)):
-        raise Warning("CRC MISMATCH")
+        # raise Warning("CRC MISMATCH")
+        print('ERROR: CRC MISMATCH')
+        crc_mismatch = True
     
     # Check packet footer
     packet_footer = packet[-2:]
     if packet_footer != PACKET_FOOTER:                    
-        raise Warning("INVALID PACKET FOOTER")    
+        # raise Warning("INVALID PACKET FOOTER")
+        print('ERROR: INVALID PACKET FOOTER')    
+        invalid_packet_footer = True
+    
     # print(f'packet footer: {packet_footer}')
-            
+    
+    if invalid_packet_header == True or invalid_packet_footer == True or message_length_mismatch == True or crc_mismatch == True:
+        # json_bytes = packet
+        # json_str = json_bytes.decode()  
+        return None 
+    
     return json_str
 
 def contsruct_payload_from_json(json_str:str):

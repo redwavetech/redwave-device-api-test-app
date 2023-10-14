@@ -3,7 +3,7 @@ from utils import get_json_from_packet, PACKET_HEADER, PACKET_FOOTER
 
 def main():    
 
-    port_name = '/dev/cu.usbmodem1101'    
+    port_name = '/dev/cu.usbmodem2101'    
     # port_name = '/dev/tty.usbserial-54790373251'
     s = serial.Serial(
         port_name, 

@@ -26,7 +26,7 @@ def contsruct_payload_from_json(json_str:str):
     ])
 
 def main():
-    port_name = '/dev/cu.usbmodem1101'
+    port_name = '/dev/cu.usbmodem2101'
     # port_name = 'COM11'  
      
     parser=argparse.ArgumentParser()
