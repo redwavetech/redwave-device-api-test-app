@@ -1,7 +1,7 @@
 # import argparse
 from serial import Serial
 import signal
-from utils import contsruct_payload_from_json, get_json_from_packet, PACKET_FOOTER
+from utils import contsruct_payload_from_json, get_json_from_packet, PACKET_HEADER, PACKET_FOOTER
 from time import sleep
 import time
 # from json import loads as jsonStrToDict
@@ -10,10 +10,10 @@ serial_port:Serial = None
 #####################################################################
 ### User variables
                    
-IS_INTERCEPTIR:bool = True
+IS_INTERCEPTIR:bool = False
 
 # PORT_NAME:str = '/dev/cu.usbmodem2101'
-PORT_NAME:str = 'COM8'
+PORT_NAME:str = 'COM5'
 # PORT_NAME:str = '/dev/ttys016'
 
 
@@ -24,10 +24,12 @@ PORT_NAME:str = 'COM8'
 
 def exit_handler(sig, frame):
     global serial_port
+
     print(f"Signal caught:")
     if serial_port and serial_port.is_open:
         print("    Closing port...")
         serial_port.close()
+    
     quit("    Quitting...")
 
 def openSerial( port_name: str ) -> None:
@@ -36,14 +38,59 @@ def openSerial( port_name: str ) -> None:
 
 def readSerial() -> str|None:
     global serial_port
-    resp_packet:bytes = b''
+    buffer:bytes = b''
+    timeFirstByte = None
 
-    while (not resp_packet.endswith( PACKET_FOOTER )) or (len(resp_packet) == 0):
-        resp_packet = serial_port.read_until( PACKET_FOOTER ) # timeout of 0.2s
+    # Local function for handling invalid packet structure
+    def _readError( msg: str ):
+        print( msg )
+        serial_port.read_all() # flush read buffer
+
+
+    # Read serial buffer one byte at a time.
+    # We explicitly AVOID use of `Serial.read_until(...)` due to existing bug(s) which lead to undefined behavior.
+    while True:
+
+        # Read one byte
+        byte:bytes = serial_port.read( 1 ) # 0.2s timeout (set upon Serial obj construction)
+        
+        # If read timed out, read again
+        if len( byte ) == 0:
+            continue
+        
+        # Ensure first two bytes are the packet header
+        elif ( buffer == b'' ) and ( byte != PACKET_HEADER[0].to_bytes() ): # Accessing an array of bytes by index returns an int, so we re-cast to bytes for comparison
+            _readError( f'FIRST BYTE WAS {byte}, NOT {PACKET_HEADER[0].to_bytes()}' )
+            return None
+        elif ( buffer == PACKET_HEADER[0].to_bytes() ) and ( byte != PACKET_HEADER[1].to_bytes() ):
+            _readError( f'SECOND BYTE WAS {byte}, NOT {PACKET_HEADER[1].to_bytes()}' )
+            return None
+        
+
+
+        # Append byte to packet buffer
+        buffer += byte
+
+        # If the packet has taken longer than 2 seconds to receive, consider it invalid and exit loop
+        if timeFirstByte == None:
+            timeFirstByte = time.time()
+        elif time.time() - timeFirstByte > 2.0:
+            _readError( 'PACKET STILL INCOMPLETE AFTER 2.0 SECONDS' )
+            return None
+        
+        # If we've received the packet footer, stop reading
+        elif buffer.endswith( PACKET_FOOTER ):
+            break
     
-    resp_json = get_json_from_packet( resp_packet )
-    print( "Received:", resp_json )
-    return resp_json
+    
+    # Parse JSON message from packet
+    json_str = get_json_from_packet( buffer )
+    if json_str == None:
+        print( 'Failed to parse packet.' )
+    else:
+        print( 'Received:', json_str )
+
+    return json_str
 
 def writeSerialCommand( cmd: str ):
     global serial_port
@@ -91,12 +138,14 @@ def main():
         # Give the app and API time to load...
         # print( 'Waiting for app and API to load. Please wait...' )
         # sleep( 60.0 )
-        mystr = 'Waiting for app and API to load. Please wait... ' # trailing charater required
+
+        # Decided to give user 1/2s interval feedback that script is still running
+        wait_str = 'Waiting for app and API to load. Please wait... '
         cutoff = -3
         start = time.time()
-        while True: # decided to give user 1/2s interval feedback that script is still running
-            print( ' ' * len(mystr), end='\r' )
-            print( mystr[:cutoff], end='\r' )
+        while True:
+            print( ' ' * len(wait_str), end='\r' )  # erase line
+            print( wait_str[:cutoff], end='\r' )    # update line
             sleep( 0.5 )
             if time.time() - start >= 60.0:
                 break
@@ -106,7 +155,7 @@ def main():
                 cutoff += 1
         print() # newline
     else:
-        openSerial(PORT_NAME)
+        openSerial( PORT_NAME )
 
     #################    
     # Notice - we updated our API since this program was created.  The new API has several 
