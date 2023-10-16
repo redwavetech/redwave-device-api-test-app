@@ -27,8 +27,8 @@ def get_json_from_packet(packet:bytes):
 
     json_supposed_len, = unpack('<I', packet[2:6]) 
     # print(f'packet length raw: {packet[2:6]}')
-    print(f'packet length: {packet[2:6]}')
     print(f'json_supposed_len: {json_supposed_len}')
+    print(f'packet length:     {packet[2:6]}')
         
     # Extract JSON message
     json_bytes = packet[6:-3]
@@ -38,7 +38,7 @@ def get_json_from_packet(packet:bytes):
     
     # Extract alleged length of JSON message 
     # (interpret bytes as an unsigned integer)
-    print(f'json_actual_len: {len(json_bytes)}')
+    print(f'json_actual_len:   {len(json_bytes)}')
     if (json_supposed_len != len(json_bytes)):
         # raise Warning("MESSAGE LENGTH MISMATCH")
         print('ERROR: MESSAGE LENGTH MISMATCH')
@@ -71,8 +71,8 @@ def contsruct_payload_from_json(json_str:str):
     print('- - - - Request from app - - - - -') 
     print(f'packet header: {PACKET_HEADER}')    
     print(f'packet length: {pack("<I", len(json_str))}')
-    print(f'packet json: {json_bytes}')
-    print(f'packet crc: bytes={crc.to_bytes(1, "little", signed=False)}, int={crc}')
+    print(f'packet json:   {json_bytes}')
+    print(f'packet crc:    {crc.to_bytes(1, "little", signed=False)} (int={crc})')
     # print(f'packet crc.to_bytes, {crc.to_bytes(1, "little")}')
     print(f'packet footer: {PACKET_FOOTER}')    
 
