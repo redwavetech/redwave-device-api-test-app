@@ -1,20 +1,18 @@
 # import argparse
 from serial import Serial
-import signal
+from signal import signal, SIGINT, SIGTERM
 from utils import contsruct_payload_from_json, get_json_from_packet, PACKET_HEADER, PACKET_FOOTER
-from time import sleep
-import time
+from time import sleep, time
+from sys import exit
+from typing import NoReturn, Final, LiteralString
 # from json import loads as jsonStrToDict
-serial_port:Serial = None
+RW_SERIAL_CONN : Serial = None
 
 #####################################################################
 ### User variables
                    
-IS_INTERCEPTIR:bool = False
-
-# PORT_NAME:str = '/dev/cu.usbmodem2101'
-PORT_NAME:str = 'COM5'
-# PORT_NAME:str = '/dev/ttys016'
+IS_INTERCEPTIR : Final[bool] = False
+PORT_NAME      : Final[str]  = 'COM5' #'/dev/cu.usbmodem2101' #'/dev/ttys016'
 
 
 
@@ -22,29 +20,31 @@ PORT_NAME:str = 'COM5'
 #####################################################################
 ### Funcs
 
-def exit_handler(sig, frame):
-    global serial_port
+def exit_handler( sig, frame ) -> NoReturn:
+    global RW_SERIAL_CONN
 
-    print(f"Signal caught:")
-    if serial_port and serial_port.is_open:
-        print("    Closing port...")
-        serial_port.close()
+    print( f'Signal caught: {sig}' )
+    if RW_SERIAL_CONN and RW_SERIAL_CONN.is_open:
+        print( 'Closing port...' )
+        RW_SERIAL_CONN.close()
     
-    quit("    Quitting...")
+    print( 'Quitting...' )
+    exit( 1 )
 
 def openSerial( port_name: str ) -> None:
-    global serial_port
-    serial_port = Serial( port_name, baudrate=115200, timeout=0.2 )
+    global RW_SERIAL_CONN
+
+    RW_SERIAL_CONN = Serial( port_name, baudrate=115200, timeout=0.2 )
 
 def readSerial() -> str|None:
-    global serial_port
+    global RW_SERIAL_CONN
     buffer:bytes = b''
     timeFirstByte = None
 
     # Local function for handling invalid packet structure
     def _readError( msg: str ):
         print( msg )
-        serial_port.read_all() # flush read buffer
+        RW_SERIAL_CONN.read_all() # flush read buffer
 
 
     # Read serial buffer one byte at a time.
@@ -52,7 +52,7 @@ def readSerial() -> str|None:
     while True:
 
         # Read one byte
-        byte:bytes = serial_port.read( 1 ) # 0.2s timeout (set upon Serial obj construction)
+        byte:bytes = RW_SERIAL_CONN.read( 1 ) # 0.2s timeout (set upon Serial obj construction)
         
         # If read timed out, read again
         if len( byte ) == 0:
@@ -73,8 +73,8 @@ def readSerial() -> str|None:
 
         # If the packet has taken longer than 2 seconds to receive, consider it invalid and exit loop
         if timeFirstByte == None:
-            timeFirstByte = time.time()
-        elif time.time() - timeFirstByte > 2.0:
+            timeFirstByte = time()
+        elif time() - timeFirstByte > 2.0:
             _readError( 'PACKET STILL INCOMPLETE AFTER 2.0 SECONDS' )
             return None
         
@@ -84,7 +84,7 @@ def readSerial() -> str|None:
     
     
     # Parse JSON message from packet
-    json_str = get_json_from_packet( buffer )
+    json_str:Final[str]|None = get_json_from_packet( buffer )
     if json_str == None:
         print( 'Failed to parse packet.' )
     else:
@@ -93,14 +93,16 @@ def readSerial() -> str|None:
     return json_str
 
 def writeSerialCommand( cmd: str ):
-    global serial_port
+    global RW_SERIAL_CONN
+
     payload = contsruct_payload_from_json( '{\"command\":\"' + cmd + '\"}' )
-    serial_port.write( payload )
+    RW_SERIAL_CONN.write( payload )
 
 def main():
-    global serial_port, PORT_NAME
-    signal.signal(signal.SIGINT, exit_handler)
-    signal.signal(signal.SIGTERM, exit_handler)
+    global RW_SERIAL_CONN, PORT_NAME
+
+    signal( SIGINT, exit_handler )
+    signal( SIGTERM, exit_handler )
 
     # parser=argparse.ArgumentParser()
     # parser.add_argument("--command", help="Must be a valid command, like: get_device_info, start_cm, cancel_cm, etc.")  
@@ -123,16 +125,16 @@ def main():
         
         # Wait for API mode request
         print( 'Waiting for API mode request...' )
-        json = readSerial()
+        json:Final[str]|None = readSerial()
 
         if json == '{"request":"which_mode"}':
             # Choose USB mode
-            serial_port.write( contsruct_payload_from_json('{"mode":"usb"}') )
+            RW_SERIAL_CONN.write( contsruct_payload_from_json('{"mode":"usb"}') )
             print( 'Selecting USB API mode...' )
         else:
             print( f'Expected API mode request but instead received: "{json}"\nQuitting...' )
-            if serial_port and serial_port.is_open:
-                serial_port.close()
+            if RW_SERIAL_CONN and RW_SERIAL_CONN.is_open:
+                RW_SERIAL_CONN.close()
             exit( 1 )
 
         # Give the app and API time to load...
@@ -140,14 +142,14 @@ def main():
         # sleep( 60.0 )
 
         # Decided to give user 1/2s interval feedback that script is still running
-        wait_str = 'Waiting for app and API to load. Please wait... '
-        cutoff = -3
-        start = time.time()
+        wait_str:Final[LiteralString] = 'Waiting for app and API to load. Please wait... '
+        cutoff:int = -3
+        start:Final[float] = time()
         while True:
             print( ' ' * len(wait_str), end='\r' )  # erase line
             print( wait_str[:cutoff], end='\r' )    # update line
             sleep( 0.5 )
-            if time.time() - start >= 60.0:
+            if time() - start >= 60.0:
                 break
             elif cutoff == -1:
                 cutoff = -3
@@ -171,12 +173,12 @@ def main():
     while True:  
         # print('In while loop...')
         
-        resp_json_str = readSerial()
+        resp_json_str:Final[str] = readSerial()
         if IS_INTERCEPTIR:
-            cmd = input( 'Enter a command name to run: ' )
+            cmd:Final[str] = input( 'Enter a command name to run: ' )
             writeSerialCommand( cmd )
 
-    # serial_port.close()
+    # RW_SERIAL_CONN.close()
 
 
 
