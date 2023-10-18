@@ -1,58 +1,125 @@
-# import argparse
-from serial import Serial
-from signal import signal, SIGINT, SIGTERM
-from utils import contsruct_payload_from_json, get_json_from_packet, PACKET_HEADER, PACKET_FOOTER
-from time import sleep, time
-from sys import exit
-from typing import NoReturn, Final, LiteralString
-# from json import loads as jsonStrToDict
-RW_SERIAL_CONN : Serial = None
+from serial     import Serial
+from signal     import signal, SIGINT, SIGTERM
+from time       import time, sleep
+from threading  import Thread
+from typing     import NoReturn, Final, LiteralString
+from utils      import contsruct_payload_from_json, get_json_from_packet, KeyAsyncReader, PACKET_HEADER, PACKET_FOOTER
+import threading
+#####################################################################
+### Internal variables
+_RW_CMD_QUERY     : Final[LiteralString] = 'Enter a command name to run: '
+_RW_SERIAL_CONN   : Serial = None
+_RW_READER_THREAD : Thread = None
+_RW_KEEP_ALIVE    : bool   = True
+_RW_DO_EXIT       : bool   = False
+_RW_INPUT_BUFFER  : str    = ''
 
 #####################################################################
 ### User variables
-                   
 IS_INTERCEPTIR : Final[bool] = False
-PORT_NAME      : Final[str]  = 'COM5' #'/dev/cu.usbmodem2101' #'/dev/ttys016'
-
+PORT_NAME      : Final[str]  = 'COM8' #'/dev/cu.usbmodem2101' #'/dev/ttys016'
 
 
 
 #####################################################################
 ### Funcs
 
-def exit_handler( sig, frame ) -> NoReturn:
-    global RW_SERIAL_CONN
+def exit_handler( sig, frame ) -> None:
+    global _RW_DO_EXIT
 
     print( f'Signal caught: {sig}' )
-    if RW_SERIAL_CONN and RW_SERIAL_CONN.is_open:
-        print( 'Closing port...' )
-        RW_SERIAL_CONN.close()
+    _RW_DO_EXIT = True
+
+def keyPressCb( char:str ):
+    global _RW_INPUT_BUFFER
+
+    byte:Final[bytes] = char.encode()
+    # print( 'Key Pressed:', byte )
+
+
+    # Backspace
+    if ( byte == b'\x08' ) and ( len(_RW_INPUT_BUFFER) > 0 ):
+        _RW_INPUT_BUFFER = _RW_INPUT_BUFFER[:-1]
+        updateCmdQueryLine()
     
-    print( 'Quitting...' )
-    exit( 1 )
+    # Enter
+    elif byte == b'\r' or byte == b'\n':
+        writeSerialCommand( _RW_INPUT_BUFFER )
+        _RW_INPUT_BUFFER = ''
+        print()
+        updateCmdQueryLine()
+        sleep( 0.25 )
+    
+    # [a-zA-Z_]
+    elif byte.isalpha() or byte == b'_':
+        _RW_INPUT_BUFFER += char
+        updateCmdQueryLine()
+
+def clearCmdQueryLine():
+    global _RW_CMD_QUERY, _RW_INPUT_BUFFER
+
+    print( '\r' + (' ' * (len(_RW_CMD_QUERY) + len(_RW_INPUT_BUFFER) + 1)), end='' )
+
+def updateCmdQueryLine():
+    global _RW_CMD_QUERY, _RW_INPUT_BUFFER
+
+    newLine:Final[str] = f'{_RW_CMD_QUERY}{_RW_INPUT_BUFFER}'
+    
+    out:str = '\r'
+    out += ' ' * ( len(newLine) + 1 )
+    out += f'\r{newLine}'
+
+    print( out, end='' )
 
 def openSerial( port_name: str ) -> None:
-    global RW_SERIAL_CONN
+    global _RW_SERIAL_CONN
 
-    RW_SERIAL_CONN = Serial( port_name, baudrate=115200, timeout=0.2 )
+    _RW_SERIAL_CONN = Serial( port_name, baudrate=115200, timeout=0.2 )
+
+def closeSerial() -> None:
+    global _RW_SERIAL_CONN
+
+    if _RW_SERIAL_CONN and _RW_SERIAL_CONN.is_open:
+        print( 'Closing serial connection...' )
+        _RW_SERIAL_CONN.close()
+
+def wait_for_app():
+    # Decided to give user 1/2s interval feedback that script is still running
+    wait_str : Final[LiteralString] = 'Waiting for app and API to load. Please wait... '
+    start    : Final[float]         = time()
+    cutoff   : int                  = -3
+    while True:
+        print( ' ' * len(wait_str), end='\r' )  # erase line
+        print( wait_str[:cutoff], end='\r' )    # update line
+        sleep( 0.5 )
+        if _RW_DO_EXIT:
+            closeSerial()
+            return 0
+        elif time() - start >= 60.0:
+            print() # newline
+            break
+        elif cutoff == -1:
+            cutoff = -3
+        else:
+            cutoff += 1
 
 def readSerial() -> str|None:
-    global RW_SERIAL_CONN
+    global _RW_SERIAL_CONN, _RW_DO_EXIT
     buffer:bytes = b''
     timeFirstByte = None
 
     # Local function for handling invalid packet structure
     def _readError( msg: str ):
         print( msg )
-        RW_SERIAL_CONN.read_all() # flush read buffer
+        _RW_SERIAL_CONN.read_all() # flush read buffer
 
 
     # Read serial buffer one byte at a time.
     # We explicitly AVOID use of `Serial.read_until(...)` due to existing bug(s) which lead to undefined behavior.
-    while True:
+    while not _RW_DO_EXIT:
 
         # Read one byte
-        byte:bytes = RW_SERIAL_CONN.read( 1 ) # 0.2s timeout (set upon Serial obj construction)
+        byte:bytes = _RW_SERIAL_CONN.read( 1 ) # 0.2s timeout (set upon Serial obj construction)
         
         # If read timed out, read again
         if len( byte ) == 0:
@@ -74,41 +141,35 @@ def readSerial() -> str|None:
         # If the packet has taken longer than 2 seconds to receive, consider it invalid and exit loop
         if timeFirstByte == None:
             timeFirstByte = time()
-        elif time() - timeFirstByte > 2.0:
-            _readError( 'PACKET STILL INCOMPLETE AFTER 2.0 SECONDS' )
+        elif time() - timeFirstByte > 3.0:
+            _readError( 'PACKET STILL INCOMPLETE AFTER 3.0 SECONDS' )
             return None
         
         # If we've received the packet footer, stop reading
         elif buffer.endswith( PACKET_FOOTER ):
             break
     
+    if _RW_DO_EXIT:
+        return None
     
     # Parse JSON message from packet
-    json_str:Final[str]|None = get_json_from_packet( buffer )
-    if json_str == None:
-        print( 'Failed to parse packet.' )
-    else:
-        print( 'Received:', json_str )
+    return get_json_from_packet( buffer, do_print=False )
 
-    return json_str
+def writeSerialCommand( cmd: str ) -> int|None:
+    global _RW_SERIAL_CONN
 
-def writeSerialCommand( cmd: str ):
-    global RW_SERIAL_CONN
+    payload:Final[bytes] = contsruct_payload_from_json( '{\"command\":\"' + cmd + '\"}', do_print=False )
+    return _RW_SERIAL_CONN.write( payload )
 
-    payload = contsruct_payload_from_json( '{\"command\":\"' + cmd + '\"}' )
-    RW_SERIAL_CONN.write( payload )
-
-def main():
-    global RW_SERIAL_CONN, PORT_NAME
+# The program is stopped when any of the following cases occur:
+#   1.  Entering ctrl+c from the console (Expected means of termination)
+#   2.  IS_INTERCEPTIR is true and the API mode request packet is not received
+def main() -> NoReturn:
+    global _RW_SERIAL_CONN, PORT_NAME, _RW_READER_THREAD, _RW_KEEP_ALIVE
 
     signal( SIGINT, exit_handler )
     signal( SIGTERM, exit_handler )
-
-    # parser=argparse.ArgumentParser()
-    # parser.add_argument("--command", help="Must be a valid command, like: get_device_info, start_cm, cancel_cm, etc.")  
-    # args=parser.parse_args()
-    # cmd = args.command    
-    # print(f'Sending command: {cmd}')
+    json:str|None = None
 
     if IS_INTERCEPTIR:
         print( 'Waiting for InterceptIR to open serial connection...' )
@@ -121,43 +182,34 @@ def main():
                 break
             except IOError as e:
                 # print( e.args[0] )
-                pass
-        
+                if _RW_DO_EXIT:
+                    closeSerial()
+                    return 0
+
         # Wait for API mode request
         print( 'Waiting for API mode request...' )
-        json:Final[str]|None = readSerial()
+        json = readSerial()
 
-        if json == '{"request":"which_mode"}':
+        if _RW_DO_EXIT:
+            closeSerial()
+            return 0
+        elif json == '{"request":"which_mode"}':
             # Choose USB mode
-            RW_SERIAL_CONN.write( contsruct_payload_from_json('{"mode":"usb"}') )
+            _RW_SERIAL_CONN.write( contsruct_payload_from_json('{"mode":"usb"}') )
             print( 'Selecting USB API mode...' )
         else:
             print( f'Expected API mode request but instead received: "{json}"\nQuitting...' )
-            if RW_SERIAL_CONN and RW_SERIAL_CONN.is_open:
-                RW_SERIAL_CONN.close()
-            exit( 1 )
+            closeSerial()
+            return 1
 
         # Give the app and API time to load...
         # print( 'Waiting for app and API to load. Please wait...' )
         # sleep( 60.0 )
-
-        # Decided to give user 1/2s interval feedback that script is still running
-        wait_str:Final[LiteralString] = 'Waiting for app and API to load. Please wait... '
-        cutoff:int = -3
-        start:Final[float] = time()
-        while True:
-            print( ' ' * len(wait_str), end='\r' )  # erase line
-            print( wait_str[:cutoff], end='\r' )    # update line
-            sleep( 0.5 )
-            if time() - start >= 60.0:
-                break
-            elif cutoff == -1:
-                cutoff = -3
-            else:
-                cutoff += 1
-        print() # newline
+        wait_for_app()
     else:
         openSerial( PORT_NAME )
+
+
 
     #################    
     # Notice - we updated our API since this program was created.  The new API has several 
@@ -167,19 +219,28 @@ def main():
     # commands that can be used with this script. 
     #################
     
+    # Start keystroke-capture thread
+    keycap = KeyAsyncReader()
+    keycap.startReading( keyPressCb )
+    
     print( 'Getting device info...' )
     writeSerialCommand( 'get_device_info' )
 
-    while True:  
-        # print('In while loop...')
-        
-        resp_json_str:Final[str] = readSerial()
-        if IS_INTERCEPTIR:
-            cmd:Final[str] = input( 'Enter a command name to run: ' )
-            writeSerialCommand( cmd )
+    # Main program loop
+    while not _RW_DO_EXIT:  
+        json = readSerial()
+        if json:
+            clearCmdQueryLine()
+            print( f'\rReceived:\n{json}' )
+            updateCmdQueryLine()
 
-    # RW_SERIAL_CONN.close()
+    # Join keystroke-capture thread
+    keycap.stopReading()
 
+    # Close serial connection
+    closeSerial()
+    
+    return 0
 
 
 #####################################################################

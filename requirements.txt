@@ -1,2 +1,4 @@
 pyserial==3.5
 pyserial-asyncio==0.6
+pywin32==306
+pywin32-ctypes==0.2.0
