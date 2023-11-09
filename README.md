@@ -1,8 +1,9 @@
 # Setup Steps
 
+## On Windows using Powershell
+
 If you're downloading the project for the first time...
 
-On Windows using Powershell (PS>):
 ```
 PS> git clone https://github.com/redwavetech/redwave-device-api-test-app.git
 PS> cd redwave-device-api-test-app
@@ -24,30 +25,58 @@ PS> python -m pip install -r requirements.txt
 
 At this point, the python app is ready to run.  Before you make a request from the python app to the device, please follow these steps:
 
-- Turn on your Redwave device
-- Connect your device to your PC or Mac via USB
-- Put your device into **API** mode
-- run `python ports.py` at your command prompt to determine which port your device is connected to
+- Connect the USB cable to your PC but not to the device (yet)
+- run `python ports.py` at the command prompt to determine which port your device is connected to
+- Turn on Redwave's InterceptIR device and wait for the green light to come on
+- Connect the other end of the USB cable to the InterceptIR (this must be done within a couple seconds of when the green light comes on)
+- When the port name appears, press `ctrl c` to exit
 
-If you're on a PC... 
 
-- open `request-response.py`, find this line `port_name = 'COM11'`, and change the port_name value to the port your device is connected to
-- run `python3 request-response.py --command='{\"command\": \"get_device_info\"}'` 
+Now that you know the port, change the the PORT_NAME variable in the python script with the following steps:
+
+- open `request-response.py`, find this line `PORT_NAME = 'COMxx'` near the top of the file, and change the `PORT_NAME` value to the port your device is connected to
+
+Now that the `PORT_NAME` is updated, it's time to connect to the API with the following steps:
+
+- Connect the USB cable to your PC but not to the device (yet)
+- run `python request-response.py` at the command line
+- Turn on Redwave's InterceptIR device and wait for the green light to come on
+- Connect the other end of the USB cable to the InterceptIR (this must be done within a couple seconds of when the green light comes on)
+- You should be ready to send commands to the device within 60 seconds
+
+## On Mac
+
+```
+$ git clone https://github.com/redwavetech/redwave-device-api-test-app.git
+$ cd redwave-device-api-test-app
+```
+If you've already cloned the project...
+```
+$ cd redwave-device-api-test-app
+$ git pull origin master
+```
+Now create your virtual environment with...
+```
+$ python -m venv venv
+$ source venv/bin/activate
+$ python -m pip install -r requirements-mac.txt
+```
 
 If you're on a Mac, you have the ability to send command requests in one terminal while listening to responses in the other. To do this...
 
-- open `response.py`, find this line `port_name = '/dev/ttys016'`, and change the port_name value to the port your device is connected to
-- open a terminal window and run `python3 response.py`
-- open `request.py`, find this line `port_name = '/dev/ttys016'`, and change the port_name value to the port your device is connected to
-- open another terminal window and run `python3 request.py --command='{"command": "get_device_info"}'`
+- Connect the USB cable to your Mac but not to the device (yet)
+- Open a terminal window and run `python response.py`
+- Turn on Redwave's InterceptIR device and wait for the green light to come on
+- Connect the other end of the USB cable to the InterceptIR (this must be done within a couple seconds of when the green light comes on)
+- Within ~60 seconds, the device should be ready to receive commands with the following steps:
+- Open another terminal
+- Run `python -m venv venv`
+- Run `source venv/bin/activate`
+- Run `python request.py --command='{"command": "get_device_info"}'`. The response should appear in the other terminal
 
 To test other commands, replace the `--command=` argument with your desired command. All the available commands are listed below.
 
-When you're done, you can exit from your virtual environment with the following command:
-
-```
-PS> deactivate
-```
+When you're done, you can exit from your virtual environment with the following command: `deactivate`
 
 <br />
 
@@ -129,8 +158,11 @@ The following commands are available in a request/response fashion. Our Team Lea
     <tr>
         <td><a href="#cancel_cm">cancel_cm</a></td>
         <td>Currently available</td>
+    </tr>     
+    <tr>
+        <td><a href="#disconnect">disconnect</a></td>
+        <td>Currently available</td>
     </tr>                     
-    </tr> 
     <tr>
         <td><a href="#start_background_collection">start_background_collection</a></td>
         <td>Next release</td>
@@ -363,7 +395,6 @@ Lastly, if the device pumps in too much gas it could go into a saturation state.
 }
 ```
 
-
 ### <span id="cancel_cm">_cancel_cm_</span>
 
 This command will stop (cancel) a continuous monitoring session.
@@ -384,6 +415,26 @@ Response:
   "date": "2023-01-31T20:47:43.224256",
   "message": "Cancelled continuous monitoring.",
   "status": "done"
+}
+```
+
+### <span id="disconnect">disconnect</span>
+
+This command will disconnect the API.
+
+Request:
+
+```json
+{
+    "command":"disconnect"
+}
+```
+
+Response:
+
+```json
+{
+  "response": "Connection successfully terminated."
 }
 ```
 

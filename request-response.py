@@ -16,7 +16,7 @@ _RW_INPUT_BUFFER  : str    = ''
 
 #####################################################################
 ### User variables
-IS_INTERCEPTIR : Final[bool] = False
+IS_INTERCEPTIR : Final[bool] = True
 PORT_NAME      : Final[str]  = 'COM8' #'/dev/cu.usbmodem2101' #'/dev/ttys016'
 
 
