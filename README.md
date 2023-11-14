@@ -1,4 +1,6 @@
-# Setup Steps
+# Description
+
+This python app exists to help our integrators understand how Redwave's API works. You may not be developing your integration in python but, since python is fairly common, this app can help you become familiar with how to establish a connection and send/receive commands from our device. Currently, the API exists on our InterceptIR and XplorIR devices.
 
 ## On Windows using Powershell
 
@@ -30,6 +32,7 @@ At this point, the python app is ready to run.  Before you make a request from t
 - Turn on Redwave's InterceptIR device and wait for the green light to come on
 - Connect the other end of the USB cable to the InterceptIR (this must be done within a couple seconds of when the green light comes on)
 - When the port name appears, press `ctrl c` to exit
+- Turn off the device
 
 
 Now that you know the port, change the the PORT_NAME variable in the python script with the following steps:
@@ -173,11 +176,11 @@ The following commands are available in a request/response fashion. Our Team Lea
     </tr>  
     <tr>
         <td><a href="#cancel_spd">cancel_spd</a></td>
-        <td>Currently available</td>
+        <td>Next release</td>
     </tr>
     <tr>
         <td><a href="#get_sessions">get_sessions</a></td>
-        <td>Next release</td>
+        <td>Available</td>
     </tr>
     <tr>
         <td><a href="#get_session">get_session</a></td>
@@ -517,7 +520,7 @@ Once complete, you'll receive the following response:
 
 ### <span id="cancel_spd">_cancel_spd_</span>
 
-The following endpoint will cancel a single point detection session.
+The following command will cancel a single point detection session.
 
 ```json
 {
@@ -538,11 +541,91 @@ The response from this command is as follows:
 
 ### <span id="get_sessions">_get_sessions_</span>
 
-Information coming soon.
+The following command will return a list of sessions on the device.
 
+```json
+ {
+    "command": "get_sessions"
+}
+```
+
+The response from this command is as follows:
+
+```json
+{
+  "data": {
+    "sessions": {
+      "date" : "2023-11-09T19:02:02.00000Z",
+				"name" : "2023-11-09/C-19-02-02",
+				"sampleCount" : 1,
+				"samples" :
+				[
+					{
+						"date" : "2023-11-09T19:10:31.00000Z",
+						"hits" :
+						[
+							{
+								"casNumber" : "7664-41-7",
+								"name" : "Ammonia",
+								"score" : 0.97
+							}
+						],
+						"locationLat" : null,
+						"locationLon" : null,
+						"name" : "2023-11-09/C-19-02-02/19-10-31"
+					}
+				],
+				"type" : "cm"
+    }
+  },
+  "date" : "2023-11-09T20:45:13.00000Z",
+	"message" : "Successfully retrieved sessions",
+	"responseTo" : "get_sessions",
+	"serialNumber" : "X00060923A",
+	"status" : "done"
+}
+```
 ### <span id="get_session">_get_session_</span>
 
-Information coming soon.
+The following command will return a list of sessions on the device.  The "name" argument is the name of the sessions which you can get by running the _get_sessions_ command (see example above)
+
+```json
+{
+    "command": "get_session",
+    "args": {
+      "name": "2023-11-09/C-19-02-02"
+    }
+}
+```
+
+The response from this command is as follows:
+
+```json
+{
+  "data": {
+    "samples": [
+      {
+        "date": "2023-08-04T16:51:11.00000Z",
+        "hits": [
+          {
+            "casNumber": "67-63-0", 
+            "name": "2-propanol", 
+            "score": 0.999
+          }
+        ],
+        "locationLat": null,
+        "locationLon": null,
+        "name": "2023-08-04/16-51-11"
+      }
+    ],
+    "type": "spd"
+  },
+  "date": "2023-08-04T17:00:11.00000Z",
+  "message": "Successfully retrieved session",
+  "responseTo": "get_session",
+  "status": "done"
+}
+```
 
 ### <span id="get_sample">_get_sample_</span>
 
