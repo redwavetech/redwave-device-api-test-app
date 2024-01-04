@@ -556,33 +556,33 @@ The response from this command is as follows:
   "data": {
     "sessions": {
       "date" : "2023-11-09T19:02:02.00000Z",
-				"name" : "2023-11-09/C-19-02-02",
-				"sampleCount" : 1,
-				"samples" :
-				[
-					{
-						"date" : "2023-11-09T19:10:31.00000Z",
-						"hits" :
-						[
-							{
-								"casNumber" : "7664-41-7",
-								"name" : "Ammonia",
-								"score" : 0.97
-							}
-						],
-						"locationLat" : null,
-						"locationLon" : null,
-						"name" : "2023-11-09/C-19-02-02/19-10-31"
-					}
-				],
-				"type" : "cm"
-    }
+      "name" : "2023-11-09/C-19-02-02",
+      "sampleCount" : 1,
+      "samples" : 
+        [
+          {
+            "date" : "2023-11-09T19:10:31.00000Z",
+            "hits" : 
+              [
+                {
+                  "casNumber" : "7664-41-7",
+                  "name" : "Ammonia",
+                  "score" : 0.97
+                }
+              ],
+            "locationLat" : null,
+            "locationLon" : null,
+            "name" : "2023-11-09/C-19-02-02/19-10-31"
+          }
+        ],
+        "type" : "cm"
+      }
   },
   "date" : "2023-11-09T20:45:13.00000Z",
-	"message" : "Successfully retrieved sessions",
-	"responseTo" : "get_sessions",
-	"serialNumber" : "X00060923A",
-	"status" : "done"
+  "message" : "Successfully retrieved sessions",
+  "responseTo" : "get_sessions",
+  "serialNumber" : "X00060923A",
+  "status" : "done"
 }
 ```
 ### <span id="get_session">_get_session_</span>
