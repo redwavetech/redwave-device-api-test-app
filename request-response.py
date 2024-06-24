@@ -153,12 +153,12 @@ def readSerial() -> str|None:
         return None
     
     # Parse JSON message from packet
-    return get_json_from_packet( buffer, do_print=False )
+    return get_json_from_packet( buffer )
 
 def writeSerialCommand( cmd: str ) -> int|None:
     global _RW_SERIAL_CONN
 
-    payload:Final[bytes] = contsruct_payload_from_json( '{\"command\":\"' + cmd + '\"}', do_print=False )
+    payload:Final[bytes] = contsruct_payload_from_json( '{\"command\":\"' + cmd + '\"}' )
     return _RW_SERIAL_CONN.write( payload )
 
 # The program is stopped when any of the following cases occur:
@@ -195,7 +195,7 @@ def main() -> NoReturn:
             return 0
         elif json == '{"request":"which_mode"}':
             # Choose USB mode
-            _RW_SERIAL_CONN.write( contsruct_payload_from_json('{"mode":"usb"}') )
+            _RW_SERIAL_CONN.write( contsruct_payload_from_json('{"mode":"usb"}', do_print=True) )
             print( 'Selecting USB API mode...' )
         else:
             print( f'Expected API mode request but instead received: "{json}"\nQuitting...' )

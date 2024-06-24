@@ -1,7 +1,5 @@
 from struct         import pack, unpack
-from serial         import Serial
-from time           import sleep, time
-from typing         import Final, LiteralString
+from typing         import Final
 from threading      import Thread, Lock
 from win32api       import STD_INPUT_HANDLE
 from win32console   import GetStdHandle, KEY_EVENT, ENABLE_ECHO_INPUT, ENABLE_LINE_INPUT, ENABLE_PROCESSED_INPUT
@@ -86,11 +84,7 @@ class KeyAsyncReader():
 
 
 
-
-
-
-
-def crc8( payload:bytes ):
+def crc8(payload: bytes):
     crc = 0
     mix = 0    
     for inbyte in payload:        
@@ -102,57 +96,48 @@ def crc8( payload:bytes ):
             inbyte >>= 1    
     return crc
 
-def get_json_from_packet( packet:bytes, do_print:bool = True):
+def get_json_from_packet(packet: bytes, do_print: bool = False):
 
-    # Check packet header
-    if packet[:2] != PACKET_HEADER:                     
-        # raise Warning("INVALID PACKET HEADER")
-        print('ERROR: INVALID PACKET HEADER')
+    if do_print:
+        print(f'packet = {packet[:10]} ... {packet[-10:]}')
+        print(f'packet length = {len(packet)}')
+
+    # Check packet header/footer
+    if packet[:2] != PACKET_HEADER:
+        print('ERROR: INVALID HEADER')
         return None
-    # print(f'packet header: {packet[:2]}')        
-    
+    elif packet[-2:] != PACKET_FOOTER:
+        print('ERROR: INVALID FOOTER')
+        return None
 
-    json_supposed_len, = unpack('<I', packet[2:6]) 
-    # print(f'packet length raw: {packet[2:6]}')
-    if do_print:
-        print(f'json_supposed_len: {json_supposed_len}')
-        print(f'packet length:     {packet[2:6]}')
-        
-    # Extract JSON message
-    json_bytes = packet[6:-3]
-    # print(f'json_bytes: {json_bytes}')
-    json_str = json_bytes.decode()                           
-    # print(f'packet json: {json_str}')
-    
-    # Extract alleged length of JSON message 
-    # (interpret bytes as an unsigned integer)
-    if do_print:
-        print(f'json_actual_len:   {len(json_bytes)}')
-    if (json_supposed_len != len(json_bytes)):
-        # raise Warning("MESSAGE LENGTH MISMATCH")
+    # Extract alleged length of JSON message (interpret bytes as an unsigned integer).
+    (json_len_expected,) = unpack('<I', packet[2:6])
+    json_len_real = len(packet) - 9
+
+    if json_len_expected != json_len_real:
         print('ERROR: MESSAGE LENGTH MISMATCH')
+        print(
+            '   %8lu (expected)\n'
+            ' - %8lu (real)\n'
+            ' ------------\n'
+            '   %8lu\n'
+            % (json_len_expected, json_len_real, json_len_expected - json_len_real))
         return None
-    
-    # Extract CRC
-    crc = packet[-3] 
-    crc_packet = packet[-3:-2]                                  
-    # print(f'packet crc: {crc_packet}')
-    if (crc != crc8(json_bytes)):
-        # raise Warning("CRC MISMATCH")
+    elif do_print:
+        print('expected json len = %lu (\\x%02x\\x%02x\\x%02x\\x%02x)\n'
+              'real json len     = %lu'
+                % (json_len_expected, packet[2], packet[3], packet[4], packet[5],
+                   json_len_real))
+
+    # Extract JSON and check CRC.
+    raw_json: bytes = packet[6:-3]
+    if crc8(raw_json) != packet[-3]:
         print('ERROR: CRC MISMATCH')
         return None
-    
-    # Check packet footer
-    packet_footer = packet[-2:]
-    if packet_footer != PACKET_FOOTER:                    
-        # raise Warning("INVALID PACKET FOOTER")
-        print('ERROR: INVALID PACKET FOOTER')    
-        return None
-    # print(f'packet footer: {packet_footer}')
-    
-    return json_str
 
-def contsruct_payload_from_json( json_str:str, do_print:bool = True ):
+    return raw_json.decode()
+
+def contsruct_payload_from_json(json_str: str, do_print: bool = False):
 
     json_bytes = json_str.encode()                      # Convert string to bytes
     crc = crc8(json_bytes)
