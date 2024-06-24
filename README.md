@@ -1,8 +1,11 @@
-# Setup Steps
+# Description
+
+This python app exists to help our integrators understand how Redwave's API works. You may not be developing your integration in python but, since python is fairly common, this app can help you become familiar with how to establish a connection and send/receive commands from our device. Currently, the API exists on our InterceptIR and XplorIR devices.
+
+## On Windows using Powershell
 
 If you're downloading the project for the first time...
 
-On Windows using Powershell (PS>):
 ```
 PS> git clone https://github.com/redwavetech/redwave-device-api-test-app.git
 PS> cd redwave-device-api-test-app
@@ -24,30 +27,59 @@ PS> python -m pip install -r requirements.txt
 
 At this point, the python app is ready to run.  Before you make a request from the python app to the device, please follow these steps:
 
-- Turn on your Redwave device
-- Connect your device to your PC or Mac via USB
-- Put your device into **API** mode
-- run `python ports.py` at your command prompt to determine which port your device is connected to
+- Connect the USB cable to your PC but not to the device (yet)
+- run `python ports.py` at the command prompt to determine which port your device is connected to
+- Turn on Redwave's InterceptIR device and wait for the green light to come on
+- Connect the other end of the USB cable to the InterceptIR (this must be done within a couple seconds of when the green light comes on)
+- When the port name appears, press `ctrl c` to exit
+- Turn off the device
 
-If you're on a PC... 
 
-- open `request-response.py`, find this line `port_name = 'COM11'`, and change the port_name value to the port your device is connected to
-- run `python3 request-response.py --command='{\"command\": \"get_device_info\"}'` 
+Now that you know the port, change the the PORT_NAME variable in the python script with the following steps:
+
+- open `request-response.py`, find this line `PORT_NAME = 'COMxx'` near the top of the file, and change the `PORT_NAME` value to the port your device is connected to
+
+Now that the `PORT_NAME` is updated, it's time to connect to the API with the following steps:
+
+- Connect the USB cable to your PC but not to the device (yet)
+- run `python request-response.py` at the command line
+- Turn on Redwave's InterceptIR device and wait for the green light to come on
+- Connect the other end of the USB cable to the InterceptIR (this must be done within a couple seconds of when the green light comes on)
+- You should be ready to send commands to the device within 60 seconds
+
+## On Mac
+
+```
+$ git clone https://github.com/redwavetech/redwave-device-api-test-app.git
+$ cd redwave-device-api-test-app
+```
+If you've already cloned the project...
+```
+$ cd redwave-device-api-test-app
+$ git pull origin master
+```
+Now create your virtual environment with...
+```
+$ python -m venv venv
+$ source venv/bin/activate
+$ python -m pip install -r requirements-mac.txt
+```
 
 If you're on a Mac, you have the ability to send command requests in one terminal while listening to responses in the other. To do this...
 
-- open `response.py`, find this line `port_name = '/dev/ttys016'`, and change the port_name value to the port your device is connected to
-- open a terminal window and run `python3 response.py`
-- open `request.py`, find this line `port_name = '/dev/ttys016'`, and change the port_name value to the port your device is connected to
-- open another terminal window and run `python3 request.py --command='{"command": "get_device_info"}'`
+- Connect the USB cable to your Mac but not to the device (yet)
+- Open a terminal window and run `python response.py`
+- Turn on Redwave's InterceptIR device and wait for the green light to come on
+- Connect the other end of the USB cable to the InterceptIR (this must be done within a couple seconds of when the green light comes on)
+- Within ~60 seconds, the device should be ready to receive commands with the following steps:
+- Open another terminal
+- Run `python -m venv venv`
+- Run `source venv/bin/activate`
+- Run `python request.py --command='{"command": "get_device_info"}'`. The response should appear in the other terminal
 
 To test other commands, replace the `--command=` argument with your desired command. All the available commands are listed below.
 
-When you're done, you can exit from your virtual environment with the following command:
-
-```
-PS> deactivate
-```
+When you're done, you can exit from your virtual environment with the following command: `deactivate`
 
 <br />
 
@@ -129,8 +161,11 @@ The following commands are available in a request/response fashion. Our Team Lea
     <tr>
         <td><a href="#cancel_cm">cancel_cm</a></td>
         <td>Currently available</td>
+    </tr>     
+    <tr>
+        <td><a href="#disconnect">disconnect</a></td>
+        <td>Currently available</td>
     </tr>                     
-    </tr> 
     <tr>
         <td><a href="#start_background_collection">start_background_collection</a></td>
         <td>Next release</td>
@@ -141,11 +176,11 @@ The following commands are available in a request/response fashion. Our Team Lea
     </tr>  
     <tr>
         <td><a href="#cancel_spd">cancel_spd</a></td>
-        <td>Currently available</td>
+        <td>Next release</td>
     </tr>
     <tr>
         <td><a href="#get_sessions">get_sessions</a></td>
-        <td>Next release</td>
+        <td>Available</td>
     </tr>
     <tr>
         <td><a href="#get_session">get_session</a></td>
@@ -363,7 +398,6 @@ Lastly, if the device pumps in too much gas it could go into a saturation state.
 }
 ```
 
-
 ### <span id="cancel_cm">_cancel_cm_</span>
 
 This command will stop (cancel) a continuous monitoring session.
@@ -384,6 +418,26 @@ Response:
   "date": "2023-01-31T20:47:43.224256",
   "message": "Cancelled continuous monitoring.",
   "status": "done"
+}
+```
+
+### <span id="disconnect">disconnect</span>
+
+This command will disconnect the API.
+
+Request:
+
+```json
+{
+    "command":"disconnect"
+}
+```
+
+Response:
+
+```json
+{
+  "response": "Connection successfully terminated."
 }
 ```
 
@@ -466,7 +520,7 @@ Once complete, you'll receive the following response:
 
 ### <span id="cancel_spd">_cancel_spd_</span>
 
-The following endpoint will cancel a single point detection session.
+The following command will cancel a single point detection session.
 
 ```json
 {
@@ -487,11 +541,91 @@ The response from this command is as follows:
 
 ### <span id="get_sessions">_get_sessions_</span>
 
-Information coming soon.
+The following command will return a list of sessions on the device.
 
+```json
+ {
+    "command": "get_sessions"
+}
+```
+
+The response from this command is as follows:
+
+```json
+{
+  "data": {
+    "sessions": {
+      "date" : "2023-11-09T19:02:02.00000Z",
+      "name" : "2023-11-09/C-19-02-02",
+      "sampleCount" : 1,
+      "samples" : 
+        [
+          {
+            "date" : "2023-11-09T19:10:31.00000Z",
+            "hits" : 
+              [
+                {
+                  "casNumber" : "7664-41-7",
+                  "name" : "Ammonia",
+                  "score" : 0.97
+                }
+              ],
+            "locationLat" : null,
+            "locationLon" : null,
+            "name" : "2023-11-09/C-19-02-02/19-10-31"
+          }
+        ],
+        "type" : "cm"
+      }
+  },
+  "date" : "2023-11-09T20:45:13.00000Z",
+  "message" : "Successfully retrieved sessions",
+  "responseTo" : "get_sessions",
+  "serialNumber" : "X00060923A",
+  "status" : "done"
+}
+```
 ### <span id="get_session">_get_session_</span>
 
-Information coming soon.
+The following command will return a list of sessions on the device.  The "name" argument is the name of the sessions which you can get by running the _get_sessions_ command (see example above)
+
+```json
+{
+    "command": "get_session",
+    "args": {
+      "name": "2023-11-09/C-19-02-02"
+    }
+}
+```
+
+The response from this command is as follows:
+
+```json
+{
+  "data": {
+    "samples": [
+      {
+        "date": "2023-08-04T16:51:11.00000Z",
+        "hits": [
+          {
+            "casNumber": "67-63-0", 
+            "name": "2-propanol", 
+            "score": 0.999
+          }
+        ],
+        "locationLat": null,
+        "locationLon": null,
+        "name": "2023-08-04/16-51-11"
+      }
+    ],
+    "type": "spd"
+  },
+  "date": "2023-08-04T17:00:11.00000Z",
+  "message": "Successfully retrieved session",
+  "responseTo": "get_session",
+  "status": "done"
+}
+```
 
 ### <span id="get_sample">_get_sample_</span>
 
