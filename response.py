@@ -9,7 +9,6 @@ from serial.tools.list_ports import comports
 _RW_DO_EXIT     = False
 _RW_SERIAL_CONN : Serial = None
 
-IS_INTERCEPTIR  = True
 PORT_DESCRIPTION = 'Gadget Serial'
 PORT_NAME       = None
 
@@ -124,41 +123,8 @@ def main():
                 break                                        
         sleep(0.5)
         print('Waiting for port information...')
-
-    
-    if IS_INTERCEPTIR:
-        print( 'Waiting for InterceptIR to open serial connection...' )
-
-        # Wait for IIR to open serial port.
-        # Once open, do not send any commands but instead listen for API mode request
-        while True:
-            try:
-                openSerial()
-                break
-            except IOError as e:
-                continue
-
-        # Wait for API mode request
-        print( 'Waiting for API mode request...' )
-        json = readSerial()
-
-        if _RW_DO_EXIT:
-            closeSerial()
-            return 0
-        elif json == '{"request":"which_mode"}':
-            # Choose USB mode
-            _RW_SERIAL_CONN.write( contsruct_payload_from_json('{"mode":"usb"}') )
-            print( 'Selecting USB API mode...' )
-        else:
-            print( f'Expected API mode request but instead received: "{json}"\nQuitting...' )
-            closeSerial()
-            return 1
-
-        # # Give the app and API time to load...
-        # # print( 'Waiting for app and API to load. Please wait...' )        
-        wait_for_app()
-    else:        
-        openSerial()  
+       
+    openSerial()  
 
     if _RW_SERIAL_CONN == None:    
         print('Could not open port')

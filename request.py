@@ -1,5 +1,7 @@
 from serial import Serial
+from serial.tools.list_ports import comports
 import argparse
+from struct import pack
 from utils_mac import crc8, PACKET_HEADER, PACKET_FOOTER
 from typing import Final, NoReturn
 from time       import time, sleep
