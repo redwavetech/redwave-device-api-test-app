@@ -800,7 +800,7 @@ The following command will return a specific sample:
 The response from this command is as follows:
 
 ```json
-// This is the response for software versions <= 13.10
+// This is the response for software versions > 13.10
 {
   "data": {
     "compounds": [
