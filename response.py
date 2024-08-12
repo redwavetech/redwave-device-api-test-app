@@ -11,7 +11,7 @@ _RW_SERIAL_CONN : Serial = None
 
 
 # IMPORTANT: at one point, around software version < 13.10, we changed the code on the 
-# InterceptIR that no longer required us to set the IS_OLD_INTERCEPTIR flag to true.
+# InterceptIR that no longer required us to set the IS_OLD_INTERCEPTIR flag to true.    
 IS_OLD_INTERCEPTIR  = False  
 PORT_DESCRIPTION = 'Gadget Serial'
 PORT_NAME       = None
